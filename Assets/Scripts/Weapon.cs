@@ -6,7 +6,7 @@ public class Weapon : MonoBehaviour
 {
     [SerializeField] private Transform _bulletSpawnPoint;
 
-    private const float KnockbackStrength = 7;
+    private const float KnockbackStrength = 9;
 
     private PlayerShooter _playerShooter;
     private Rigidbody _rigidbody;

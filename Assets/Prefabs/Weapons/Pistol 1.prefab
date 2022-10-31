@@ -11,11 +11,18 @@ GameObject:
   - component: {fileID: 3263699454365990613}
   - component: {fileID: 1937997863159198064}
   - component: {fileID: 4396025059160950202}
+<<<<<<< HEAD
+  - component: {fileID: 9195615305045848528}
+  - component: {fileID: -1727583490295952545}
+  - component: {fileID: 3948043809341961758}
+  - component: {fileID: 3761828529934634524}
+=======
   - component: {fileID: -1727583490295952545}
   - component: {fileID: 3948043809341961758}
   - component: {fileID: 3761828529934634524}
   - component: {fileID: 1082660972}
   - component: {fileID: 1082660973}
+>>>>>>> level-generation
   m_Layer: 0
   m_Name: Pistol 1
   m_TagString: Untagged
@@ -89,6 +96,23 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+<<<<<<< HEAD
+--- !u!64 &9195615305045848528
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2738520558268228719}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -3727299226792910341, guid: e6efe674338ad4a49866fd7e5c2ba6b4, type: 3}
+=======
+>>>>>>> level-generation
 --- !u!54 &-1727583490295952545
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -103,7 +127,11 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
+<<<<<<< HEAD
+  m_Constraints: 32
+=======
   m_Constraints: 40
+>>>>>>> level-generation
   m_CollisionDetection: 0
 --- !u!114 &3948043809341961758
 MonoBehaviour:
@@ -129,6 +157,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81e64440c87278941a7c761079f7602f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+<<<<<<< HEAD
+  _bulletSpawnPoint: {fileID: 0}
+=======
   _bulletSpawnPoint: {fileID: 4109617442749981714}
 --- !u!65 &1082660972
 BoxCollider:
@@ -156,6 +187,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.1706065, y: 0.29852107, z: 0.06887517}
   m_Center: {x: -0.093261115, y: -0.03398569, z: 0.0000072345138}
+>>>>>>> level-generation
 --- !u!1 &3431395788675659662
 GameObject:
   m_ObjectHideFlags: 0

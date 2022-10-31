@@ -24,7 +24,7 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
     ""name"": ""PlayerActions"",
     ""maps"": [
         {
-            ""name"": ""Gun"",
+            ""name"": ""Weapon"",
             ""id"": ""3771548c-80ff-4921-ac5a-23787f1ea9a8"",
             ""actions"": [
                 {
@@ -48,6 +48,17 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
                     ""action"": ""Shoot"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9ee1a890-dbe3-4189-8630-addc228e0117"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse"",
+                    ""action"": ""Shoot"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -57,12 +68,17 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
             ""name"": ""TouchScreen"",
             ""bindingGroup"": ""TouchScreen"",
             ""devices"": []
+        },
+        {
+            ""name"": ""Mouse"",
+            ""bindingGroup"": ""Mouse"",
+            ""devices"": []
         }
     ]
 }");
-        // Gun
-        m_Gun = asset.FindActionMap("Gun", throwIfNotFound: true);
-        m_Gun_Shoot = m_Gun.FindAction("Shoot", throwIfNotFound: true);
+        // Weapon
+        m_Weapon = asset.FindActionMap("Weapon", throwIfNotFound: true);
+        m_Weapon_Shoot = m_Weapon.FindAction("Shoot", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -119,29 +135,29 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
         return asset.FindBinding(bindingMask, out action);
     }
 
-    // Gun
-    private readonly InputActionMap m_Gun;
-    private IGunActions m_GunActionsCallbackInterface;
-    private readonly InputAction m_Gun_Shoot;
-    public struct GunActions
+    // Weapon
+    private readonly InputActionMap m_Weapon;
+    private IWeaponActions m_WeaponActionsCallbackInterface;
+    private readonly InputAction m_Weapon_Shoot;
+    public struct WeaponActions
     {
         private @PlayerActions m_Wrapper;
-        public GunActions(@PlayerActions wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Shoot => m_Wrapper.m_Gun_Shoot;
-        public InputActionMap Get() { return m_Wrapper.m_Gun; }
+        public WeaponActions(@PlayerActions wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Shoot => m_Wrapper.m_Weapon_Shoot;
+        public InputActionMap Get() { return m_Wrapper.m_Weapon; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
         public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(GunActions set) { return set.Get(); }
-        public void SetCallbacks(IGunActions instance)
+        public static implicit operator InputActionMap(WeaponActions set) { return set.Get(); }
+        public void SetCallbacks(IWeaponActions instance)
         {
-            if (m_Wrapper.m_GunActionsCallbackInterface != null)
+            if (m_Wrapper.m_WeaponActionsCallbackInterface != null)
             {
-                @Shoot.started -= m_Wrapper.m_GunActionsCallbackInterface.OnShoot;
-                @Shoot.performed -= m_Wrapper.m_GunActionsCallbackInterface.OnShoot;
-                @Shoot.canceled -= m_Wrapper.m_GunActionsCallbackInterface.OnShoot;
+                @Shoot.started -= m_Wrapper.m_WeaponActionsCallbackInterface.OnShoot;
+                @Shoot.performed -= m_Wrapper.m_WeaponActionsCallbackInterface.OnShoot;
+                @Shoot.canceled -= m_Wrapper.m_WeaponActionsCallbackInterface.OnShoot;
             }
-            m_Wrapper.m_GunActionsCallbackInterface = instance;
+            m_Wrapper.m_WeaponActionsCallbackInterface = instance;
             if (instance != null)
             {
                 @Shoot.started += instance.OnShoot;
@@ -150,7 +166,7 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
             }
         }
     }
-    public GunActions @Gun => new GunActions(this);
+    public WeaponActions @Weapon => new WeaponActions(this);
     private int m_TouchScreenSchemeIndex = -1;
     public InputControlScheme TouchScreenScheme
     {
@@ -160,7 +176,16 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
             return asset.controlSchemes[m_TouchScreenSchemeIndex];
         }
     }
-    public interface IGunActions
+    private int m_MouseSchemeIndex = -1;
+    public InputControlScheme MouseScheme
+    {
+        get
+        {
+            if (m_MouseSchemeIndex == -1) m_MouseSchemeIndex = asset.FindControlSchemeIndex("Mouse");
+            return asset.controlSchemes[m_MouseSchemeIndex];
+        }
+    }
+    public interface IWeaponActions
     {
         void OnShoot(InputAction.CallbackContext context);
     }
