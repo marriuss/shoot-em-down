@@ -6,6 +6,8 @@ public class Weapon : MonoBehaviour
 {
     [SerializeField] private Transform _bulletSpawnPoint;
 
+    private const float KnockbackStrength = 9;
+
     private PlayerShooter _playerShooter;
     private Rigidbody _rigidbody;
 
@@ -32,5 +34,8 @@ public class Weapon : MonoBehaviour
 
     private void Shoot()
     {
+        Vector3 bulletSpawnPointPosition = _bulletSpawnPoint.position;
+        Vector3 knockbackDirection = (bulletSpawnPointPosition - _rigidbody.position).normalized;
+        _rigidbody.AddForceAtPosition(-knockbackDirection * KnockbackStrength, bulletSpawnPointPosition, ForceMode.VelocityChange);
     }
 }
