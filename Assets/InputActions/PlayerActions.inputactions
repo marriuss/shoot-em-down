@@ -2,7 +2,7 @@
     "name": "PlayerActions",
     "maps": [
         {
-            "name": "Gun",
+            "name": "Weapon",
             "id": "3771548c-80ff-4921-ac5a-23787f1ea9a8",
             "actions": [
                 {
@@ -26,6 +26,17 @@
                     "action": "Shoot",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9ee1a890-dbe3-4189-8630-addc228e0117",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse",
+                    "action": "Shoot",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }
@@ -34,6 +45,11 @@
         {
             "name": "TouchScreen",
             "bindingGroup": "TouchScreen",
+            "devices": []
+        },
+        {
+            "name": "Mouse",
+            "bindingGroup": "Mouse",
             "devices": []
         }
     ]
