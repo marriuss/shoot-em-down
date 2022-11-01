@@ -5,11 +5,15 @@ using UnityEngine;
 public class Weapon : MonoBehaviour
 {
     [SerializeField] private Transform _bulletSpawnPoint;
+    [SerializeField] private Transform _shootingPoint;
+    [SerializeField] private Bullet _bulletPrefab;
+    [SerializeField] private WeaponStats _stats;
 
     private const float KnockbackStrength = 9;
 
     private PlayerShooter _playerShooter;
     private Rigidbody _rigidbody;
+    private float _lastShotTime;
 
     private void Awake()
     {
@@ -29,13 +33,21 @@ public class Weapon : MonoBehaviour
 
     private void OnPlayerShot()
     {
-        Shoot();
+        float currentTime = Time.time;
+
+        if (_lastShotTime + _stats.ShootingDelay < currentTime)
+        {
+            _lastShotTime = currentTime;
+            Shoot();
+        }
     }
 
     private void Shoot()
     {
         Vector3 bulletSpawnPointPosition = _bulletSpawnPoint.position;
-        Vector3 knockbackDirection = (bulletSpawnPointPosition - _rigidbody.position).normalized;
-        _rigidbody.AddForceAtPosition(-knockbackDirection * KnockbackStrength, bulletSpawnPointPosition, ForceMode.VelocityChange);
+        Vector3 bulletFlyDirection = (bulletSpawnPointPosition - _shootingPoint.position).normalized;
+        Bullet bullet = Instantiate(_bulletPrefab, bulletSpawnPointPosition, Quaternion.identity, gameObject.transform);
+        bullet.Fly(bulletFlyDirection);
+        _rigidbody.AddForceAtPosition(-bulletFlyDirection * KnockbackStrength, bulletSpawnPointPosition, ForceMode.VelocityChange);
     }
 }
