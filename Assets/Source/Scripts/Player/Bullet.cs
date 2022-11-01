@@ -4,9 +4,13 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class Bullet : MonoBehaviour
 {
+    [SerializeField] private int _damage;
+
     private const float Speed = 10;
     
     private Rigidbody _rigidbody;
+
+    public int Damage => _damage;
 
     private void Awake()
     {
