@@ -31,6 +31,11 @@ public class Weapon : MonoBehaviour
         _playerShooter.PlayerShot -= OnPlayerShot;
     }
 
+    public void Spawn(Vector3 position)
+    {
+        _rigidbody.position = position;
+    }
+
     private void OnPlayerShot()
     {
         float currentTime = Time.time;
