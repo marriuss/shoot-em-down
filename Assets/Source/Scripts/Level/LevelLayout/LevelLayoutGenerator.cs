@@ -7,36 +7,36 @@ public class LevelLayoutGenerator : MonoBehaviour
     [SerializeField] private Platform _platformPrefab;
     [SerializeField] private Background _backgroundPrefab;
     [SerializeField] private LevelExit _levelExitPrefab;
-    [SerializeField, Min(10)] private int _levelHeight;
+    [SerializeField, Min(MinLevelHeght)] private int _levelHeight;
 
-    private const float LevelWidthRatio = 0.7f;
+    private const float MinLevelHeght = 10;
+    private const float PlatformWidthRatio = 0.4f;
+    private const float BackgroundWidthRatio = 0.7f;
     private const float PlatformHeight = 1;
     private const float LevelExitHeight = PlatformHeight * 2;
-    private const float LevelExitOffset = 5;
-    private const int PlatformsOffset = 5;
-    private const float MinPlarformWidth = 1;
-    private const float MaxPlatformWidthRatio = 0.5f;
+    private const int PlatformsYOffset = 5;
+    private const float LevelExitYOffset = 5;
+    private const float BackgroundZOffset = 0.5f;
 
     private Camera _camera;
+    private float _cameraWidth;
     private float _backgroundWidth;
     private float _borderWidth;
-    private float _maxPlatformWidth;
+    private float _platformWidth;
     private Vector3 _levelTop;
     private Vector3 _levelCenter;
-    private Vector3 _levelBottom;
-
-    private Bounds _cameraBounds => _camera.GetOrthographicBounds();
+    private Vector3 _levelExitPosition;
 
     private void Awake()
     {
         _camera = Camera.main;
-        float cameraBoundsSize = _cameraBounds.size.x;
-        _backgroundWidth = cameraBoundsSize * LevelWidthRatio;
-        _borderWidth = cameraBoundsSize * (1 - LevelWidthRatio);
+        _cameraWidth = _camera.GetOrthographicBounds().size.x;
+        _backgroundWidth = _cameraWidth * BackgroundWidthRatio;
+        _borderWidth = _cameraWidth * (1 - BackgroundWidthRatio);
         _levelTop = _levelStartPoint.position;
         _levelCenter = _levelTop + Vector3.down * (_levelHeight * 0.5f);
-        _levelBottom = _levelTop + Vector3.down * _levelHeight;
-        _maxPlatformWidth = _backgroundWidth * MaxPlatformWidthRatio;
+        _levelExitPosition = _levelTop + Vector3.down * (_levelHeight - LevelExitYOffset);
+        _platformWidth = _backgroundWidth * PlatformWidthRatio;
     }
 
     private void Start()
@@ -45,12 +45,11 @@ public class LevelLayoutGenerator : MonoBehaviour
         GenerateBackround();
         GeneratePlatforms();
         GenerateLevelExit();
-
     }
 
     private void GenerateBorders()
     {
-        float xBorderOffset = _cameraBounds.size.x / 2;
+        float xBorderOffset = _cameraWidth / 2;
 
         Vector3 leftStartPosition = _levelCenter;
         leftStartPosition.x = -xBorderOffset;
@@ -67,7 +66,7 @@ public class LevelLayoutGenerator : MonoBehaviour
     {
         Background background = Instantiate(_backgroundPrefab, transform);
         background.Scale(_levelHeight, _backgroundWidth);
-        background.transform.position = _levelCenter + new Vector3(0, 0, 0.5f);
+        background.transform.position = _levelCenter + new Vector3(0, 0, BackgroundZOffset);
     }
 
     private void GeneratePlatforms()
@@ -75,22 +74,24 @@ public class LevelLayoutGenerator : MonoBehaviour
         Platform platform = Instantiate(_platformPrefab, _levelTop, Quaternion.identity, transform);
         platform.Scale(PlatformHeight, _backgroundWidth);
 
-        int i = PlatformsOffset;
+        Vector3 yOffset = Vector3.down * PlatformsYOffset;
+        Vector3 xOffset = Vector3.right * (_backgroundWidth - _platformWidth) / 2;
+        Vector3 position = _levelTop + yOffset;
 
-        while (i < _levelHeight)
+        while (position.y > _levelExitPosition.y)
         {
             platform = Instantiate(platform, transform);
-            platform.Scale(PlatformHeight, _maxPlatformWidth);
-            platform.transform.position = _levelTop + Vector3.down * i;
-            i += PlatformsOffset;
+            platform.Scale(PlatformHeight, _platformWidth);
+            platform.transform.position = position + xOffset * RandomSign();
+            position += yOffset;
         }
     }
 
     private void GenerateLevelExit()
     {
-        Vector3 startPosition = _levelBottom + Vector3.up * LevelExitOffset;
-
-        LevelExit levelExit = Instantiate(_levelExitPrefab, startPosition, Quaternion.identity, transform);
+        LevelExit levelExit = Instantiate(_levelExitPrefab, _levelExitPosition, Quaternion.identity, transform);
         levelExit.Scale(LevelExitHeight, _backgroundWidth);
     }
+
+    private int RandomSign() => Random.value < 0.5f ? -1 : 1;
 }
