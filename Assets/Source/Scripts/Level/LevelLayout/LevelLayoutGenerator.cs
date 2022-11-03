@@ -2,17 +2,17 @@ using UnityEngine;
 
 public class LevelLayoutGenerator : MonoBehaviour
 {
-    [SerializeField] private LevelExit _levelExit;
+    [SerializeField] private Transform _levelStartPoint;
     [SerializeField] private Border _borderPrefab;
     [SerializeField] private Platform _platformPrefab;
     [SerializeField] private Background _backgroundPrefab;
-    [SerializeField] private Transform _backgroundStartPosition;
-    [SerializeField] private Transform _levelStartPoint;
+    [SerializeField] private LevelExit _levelExitPrefab;
     [SerializeField, Min(10)] private int _levelHeight;
 
     private const float LevelWidthRatio = 0.7f;
     private const float PlatformHeight = 1;
-    private const float ExitLevelBottomPosition = 5;
+    private const float LevelExitHeight = PlatformHeight * 2;
+    private const float LevelExitOffset = 5;
     private const int PlatformsOffset = 5;
     private const float MinPlarformWidth = 1;
     private const float MaxPlatformWidthRatio = 0.5f;
@@ -20,8 +20,10 @@ public class LevelLayoutGenerator : MonoBehaviour
     private Camera _camera;
     private float _backgroundWidth;
     private float _borderWidth;
-    private Vector3 _startPosition;
     private float _maxPlatformWidth;
+    private Vector3 _levelTop;
+    private Vector3 _levelCenter;
+    private Vector3 _levelBottom;
 
     private Bounds _cameraBounds => _camera.GetOrthographicBounds();
 
@@ -30,8 +32,10 @@ public class LevelLayoutGenerator : MonoBehaviour
         _camera = Camera.main;
         float cameraBoundsSize = _cameraBounds.size.x;
         _backgroundWidth = cameraBoundsSize * LevelWidthRatio;
-        _borderWidth = (cameraBoundsSize * (1 - LevelWidthRatio));
-        _startPosition = _levelStartPoint.position;
+        _borderWidth = cameraBoundsSize * (1 - LevelWidthRatio);
+        _levelTop = _levelStartPoint.position;
+        _levelCenter = _levelTop + Vector3.down * (_levelHeight * 0.5f);
+        _levelBottom = _levelTop + Vector3.down * _levelHeight;
         _maxPlatformWidth = _backgroundWidth * MaxPlatformWidthRatio;
     }
 
@@ -40,42 +44,53 @@ public class LevelLayoutGenerator : MonoBehaviour
         GenerateBorders();
         GenerateBackround();
         GeneratePlatforms();
+        GenerateLevelExit();
+
     }
 
     private void GenerateBorders()
     {
         float xBorderOffset = _cameraBounds.size.x / 2;
-        float yBorderOffset = -_levelHeight / 2;
-        Vector3 leftOffset = new Vector3(-xBorderOffset, yBorderOffset, 0);
-        Vector3 rightOffset = new Vector3(xBorderOffset, yBorderOffset, 0);
 
-        Border leftBorder = Instantiate(_borderPrefab, _startPosition + leftOffset, Quaternion.identity);
+        Vector3 leftStartPosition = _levelCenter;
+        leftStartPosition.x = -xBorderOffset;
+
+        Vector3 rightStartPosition = _levelCenter;
+        rightStartPosition.x = xBorderOffset;
+
+        Border leftBorder = Instantiate(_borderPrefab, leftStartPosition, Quaternion.identity, transform);
         leftBorder.Scale(_levelHeight, _borderWidth);
-        Instantiate(leftBorder, _startPosition + rightOffset, Quaternion.identity);
+        Instantiate(leftBorder, rightStartPosition, Quaternion.identity, transform);
     }
 
     private void GenerateBackround()
     {
-        Background background = Instantiate(_backgroundPrefab);
+        Background background = Instantiate(_backgroundPrefab, transform);
         background.Scale(_levelHeight, _backgroundWidth);
-        background.transform.position = _startPosition + new Vector3(0, -_levelHeight / 2, 0.5f);
+        background.transform.position = _levelCenter + new Vector3(0, 0, 0.5f);
     }
 
     private void GeneratePlatforms()
     {
-        Platform platform = Instantiate(_platformPrefab, _startPosition, Quaternion.identity);
+        Platform platform = Instantiate(_platformPrefab, _levelTop, Quaternion.identity, transform);
         platform.Scale(PlatformHeight, _backgroundWidth);
-
-        Vector3 offset = new Vector3(0, 1, 0);
 
         int i = PlatformsOffset;
 
         while (i < _levelHeight)
         {
-            platform = Instantiate(platform);
+            platform = Instantiate(platform, transform);
             platform.Scale(PlatformHeight, _maxPlatformWidth);
-            platform.transform.position = _startPosition + Vector3.down * i;
+            platform.transform.position = _levelTop + Vector3.down * i;
             i += PlatformsOffset;
         }
+    }
+
+    private void GenerateLevelExit()
+    {
+        Vector3 startPosition = _levelBottom + Vector3.up * LevelExitOffset;
+
+        LevelExit levelExit = Instantiate(_levelExitPrefab, startPosition, Quaternion.identity, transform);
+        levelExit.Scale(LevelExitHeight, _backgroundWidth);
     }
 }
