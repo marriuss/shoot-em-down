@@ -177,6 +177,7 @@ MonoBehaviour:
   - {fileID: -2357309810178631847, guid: 1f05b36eff9f0c941a187ddef4a43a0a, type: 3}
   - {fileID: 2449416364263305707, guid: 4f2e058a94bca0742939d136d2b88baf, type: 3}
   - {fileID: 1081907301175297035, guid: e7707aec2cc25b449a610f5087a64251, type: 3}
+  _moneyPrefab: {fileID: 0}
   _levelHeight: 40
 --- !u!1 &565923868
 GameObject:

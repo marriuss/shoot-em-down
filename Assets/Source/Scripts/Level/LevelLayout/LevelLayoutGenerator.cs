@@ -8,6 +8,7 @@ public class LevelLayoutGenerator : MonoBehaviour
     [SerializeField] private Background _backgroundPrefab;
     [SerializeField] private LevelExit _levelExitPrefab;
     [SerializeField] private Enemy[] _enemyPrefabs;
+    [SerializeField] private Money _moneyPrefab;
     [SerializeField, Min(MinLevelHeght)] private int _levelHeight;
 
     private const float MinLevelHeght = 10;
