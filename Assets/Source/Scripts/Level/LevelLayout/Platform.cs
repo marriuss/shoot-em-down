@@ -5,7 +5,7 @@ public class Platform : LevelLayoutPart
 {
     private Bounds _bounds;
 
-    public void SetObject(Enemy gameObject)
+    public void SetObject(GameObject gameObject)
     {
         Vector3 center = _bounds.center;
         gameObject.transform.position = new Vector3(center.x, center.y + _bounds.extents.z, center.z);

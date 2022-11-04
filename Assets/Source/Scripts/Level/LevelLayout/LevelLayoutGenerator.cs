@@ -17,7 +17,7 @@ public class LevelLayoutGenerator : MonoBehaviour
     private const float PlatformHeight = 1;
     private const float LevelExitHeight = PlatformHeight * 2;
     private const int PlatformsYOffset = 5;
-    private const float LevelExitYOffset = 5;
+    private const int LevelExitYOffset = 5;
     private const float BackgroundZOffset = 0.5f;
 
     private Camera _camera;
@@ -45,7 +45,7 @@ public class LevelLayoutGenerator : MonoBehaviour
     {
         GenerateBorders();
         GenerateBackround();
-        GeneratePlatforms();
+        GenerateInnerLevel();
         GenerateLevelExit();
     }
 
@@ -66,34 +66,45 @@ public class LevelLayoutGenerator : MonoBehaviour
 
     private void GenerateBackround()
     {
-        Background background = Instantiate(_backgroundPrefab, transform);
+        Background background = Instantiate(_backgroundPrefab, _levelCenter + Vector3.forward * BackgroundZOffset, Quaternion.identity, transform);
         background.Scale(_levelHeight, _backgroundWidth);
-        background.transform.position = _levelCenter + new Vector3(0, 0, BackgroundZOffset);
     }
 
-    private void GeneratePlatforms()
+    private void GenerateInnerLevel()
     {
         Platform startPlatform = Instantiate(_platformPrefab, _levelTop, Quaternion.identity, transform);
         startPlatform.Scale(PlatformHeight, _backgroundWidth);
 
-        Vector3 yOffset = Vector3.down * PlatformsYOffset;
-        Vector3 xOffset = Vector3.right * (_backgroundWidth - _platformWidth) / 2;
-        Vector3 position = _levelTop + yOffset;
+        Vector3 platformXOffset = Vector3.right * (_backgroundWidth - _platformWidth) / 2;
+        Vector3 currentCellPosition = _levelTop;
 
-        int randomIndex;
-        Enemy enemy;
-        Platform platform;
+        int currentCellNumber = 1;
+        int lastCellNumber = _levelHeight - LevelExitYOffset;
 
-        while (position.y > _levelExitPosition.y)
+        while (currentCellNumber < lastCellNumber)
         {
-            platform = Instantiate(_platformPrefab, position + xOffset * RandomSign(), Quaternion.identity, transform);
-            platform.Scale(PlatformHeight, _platformWidth);
-            position += yOffset;
+            currentCellPosition += Vector3.down;
 
-            randomIndex = Random.Range(0, _enemyPrefabs.Length);
-            enemy = Instantiate(_enemyPrefabs[randomIndex]);
-            platform.SetObject(enemy);
+            if (currentCellNumber % PlatformsYOffset == 0)
+            {
+                GeneratePlatform(currentCellPosition + platformXOffset * RandomSign());
+            }
+            else
+            {
+
+            }
+
+            currentCellNumber++;
         }
+    }
+
+    private void GeneratePlatform(Vector3 position)
+    {
+        Platform platform = Instantiate(_platformPrefab, position, Quaternion.identity, transform);
+        platform.Scale(PlatformHeight, _platformWidth);
+        int randomIndex = Random.Range(0, _enemyPrefabs.Length);
+        Enemy enemy = Instantiate(_enemyPrefabs[randomIndex]);
+        platform.SetObject(enemy.gameObject);
     }
 
     private void GenerateLevelExit()
