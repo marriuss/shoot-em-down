@@ -6,11 +6,11 @@ public class LevelStarter : MonoBehaviour
 {
     [SerializeField] private LevelLayoutGenerator _levelLayoutGenerator;
     [SerializeField] private Transform _playerSpawnPoint;
-    [SerializeField] private Weapon _player;
+    [SerializeField] private Player _player;
 
     private void Start()
     {
-        _player.Spawn(_playerSpawnPoint.position);
+        _player.SpawnWeapon(_playerSpawnPoint.position);
     }
 
 }

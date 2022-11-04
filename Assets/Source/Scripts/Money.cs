@@ -1,16 +1,16 @@
 using UnityEngine;
-using UnityEngine.Events;
 
 [RequireComponent(typeof(BoxCollider))]
 public class Money : MonoBehaviour
 {
     [SerializeField] private int _value;
     [SerializeField] private float _rotationAnglePerSecond;
-    [SerializeField] private UnityEvent<int> _playerCollectedMoney;
 
     private const float DestructionDelay = 0.5f;
 
     private BoxCollider _boxCollider;
+
+    public int Value => _value;
 
     private void Awake()
     {
@@ -22,13 +22,14 @@ public class Money : MonoBehaviour
         transform.Rotate(_rotationAnglePerSecond * Time.deltaTime * Vector3.up);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision collision)
     {
-        if (other.TryGetComponent(out Weapon _) || other.TryGetComponent(out Bullet _))
+        Collider collider = collision.collider;
+
+        if (collider.TryGetComponent(out Weapon _) || collider.TryGetComponent(out Bullet _))
         {
-            _playerCollectedMoney?.Invoke(_value);
             _boxCollider.enabled = false;
+            Destroy(gameObject, DestructionDelay);
         }
-        Destroy(gameObject, DestructionDelay);
     }
 }

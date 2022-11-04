@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(PlayerShooter))]
 [RequireComponent(typeof(Rigidbody))]
@@ -14,6 +15,8 @@ public class Weapon : MonoBehaviour
     private PlayerShooter _playerShooter;
     private Rigidbody _rigidbody;
     private float _lastShotTime;
+
+    public UnityAction<int> CollectedMoney;
 
     private void Awake()
     {
@@ -31,7 +34,13 @@ public class Weapon : MonoBehaviour
         _playerShooter.PlayerShot -= OnPlayerShot;
     }
 
-    public void Spawn(Vector3 position)
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.TryGetComponent(out Money money))
+            CollectedMoney?.Invoke(money.Value);
+    }
+
+    public void Translate(Vector3 position)
     {
         _rigidbody.position = position;
     }
@@ -52,7 +61,17 @@ public class Weapon : MonoBehaviour
         Vector3 bulletSpawnPointPosition = _bulletSpawnPoint.position;
         Vector3 bulletFlyDirection = (bulletSpawnPointPosition - _shootingPoint.position).normalized;
         Bullet bullet = Instantiate(_bulletPrefab, bulletSpawnPointPosition, Quaternion.identity, gameObject.transform);
+        bullet.HitCollider += OnBulletHitCollider;
         bullet.Fly(bulletFlyDirection);
         _rigidbody.AddForceAtPosition(-bulletFlyDirection * KnockbackStrength, bulletSpawnPointPosition, ForceMode.VelocityChange);
     }
+
+    private void OnBulletHitCollider(Bullet bullet, Collider hitCollider)
+    {
+        bullet.HitCollider -= OnBulletHitCollider;
+
+        if (hitCollider.TryGetComponent(out Money money))
+            CollectedMoney?.Invoke(money.Value);
+    }
+
 }
