@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class LevelStarter : MonoBehaviour
 {
+    [SerializeField] private LevelLayoutGenerator _levelLayoutGenerator;
     [SerializeField] private Transform _playerSpawnPoint;
     [SerializeField] private Weapon _player;
 

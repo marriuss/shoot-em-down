@@ -173,6 +173,10 @@ MonoBehaviour:
   _platformPrefab: {fileID: -1912650160871518395, guid: 6ddbd46f39219444fa6612a26716edc2, type: 3}
   _backgroundPrefab: {fileID: 5645342379706967203, guid: 7fbe41b03420aca48914eaa4916c7c19, type: 3}
   _levelExitPrefab: {fileID: 8962422060055017799, guid: 8d009e9b6240012458d39220b16a5da8, type: 3}
+  _enemyPrefabs:
+  - {fileID: -2357309810178631847, guid: 1f05b36eff9f0c941a187ddef4a43a0a, type: 3}
+  - {fileID: 2449416364263305707, guid: 4f2e058a94bca0742939d136d2b88baf, type: 3}
+  - {fileID: 1081907301175297035, guid: e7707aec2cc25b449a610f5087a64251, type: 3}
   _levelHeight: 40
 --- !u!1 &565923868
 GameObject:
@@ -220,6 +224,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43577980595885047a693d7121036ab5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _levelLayoutGenerator: {fileID: 368835398}
   _playerSpawnPoint: {fileID: 2069587869}
   _player: {fileID: 793542950}
 --- !u!1001 &603455025

@@ -7,6 +7,7 @@ public class LevelLayoutGenerator : MonoBehaviour
     [SerializeField] private Platform _platformPrefab;
     [SerializeField] private Background _backgroundPrefab;
     [SerializeField] private LevelExit _levelExitPrefab;
+    [SerializeField] private Enemy[] _enemyPrefabs;
     [SerializeField, Min(MinLevelHeght)] private int _levelHeight;
 
     private const float MinLevelHeght = 10;
@@ -71,19 +72,26 @@ public class LevelLayoutGenerator : MonoBehaviour
 
     private void GeneratePlatforms()
     {
-        Platform platform = Instantiate(_platformPrefab, _levelTop, Quaternion.identity, transform);
-        platform.Scale(PlatformHeight, _backgroundWidth);
+        Platform startPlatform = Instantiate(_platformPrefab, _levelTop, Quaternion.identity, transform);
+        startPlatform.Scale(PlatformHeight, _backgroundWidth);
 
         Vector3 yOffset = Vector3.down * PlatformsYOffset;
         Vector3 xOffset = Vector3.right * (_backgroundWidth - _platformWidth) / 2;
         Vector3 position = _levelTop + yOffset;
 
+        int randomIndex;
+        Enemy enemy;
+        Platform platform;
+
         while (position.y > _levelExitPosition.y)
         {
-            platform = Instantiate(platform, transform);
+            platform = Instantiate(_platformPrefab, position + xOffset * RandomSign(), Quaternion.identity, transform);
             platform.Scale(PlatformHeight, _platformWidth);
-            platform.transform.position = position + xOffset * RandomSign();
             position += yOffset;
+
+            randomIndex = Random.Range(0, _enemyPrefabs.Length);
+            enemy = Instantiate(_enemyPrefabs[randomIndex]);
+            platform.SetObject(enemy);
         }
     }
 
