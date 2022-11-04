@@ -19,6 +19,7 @@ public class LevelLayoutGenerator : MonoBehaviour
     private const int PlatformsYOffset = 5;
     private const int LevelExitYOffset = 5;
     private const float BackgroundZOffset = 0.5f;
+    private const float MoneyFrequency = 0.3f;
 
     private Camera _camera;
     private float _cameraWidth;
@@ -37,7 +38,7 @@ public class LevelLayoutGenerator : MonoBehaviour
         _borderWidth = _cameraWidth * (1 - BackgroundWidthRatio);
         _levelTop = _levelStartPoint.position;
         _levelCenter = _levelTop + Vector3.down * (_levelHeight * 0.5f);
-        _levelExitPosition = _levelTop + Vector3.down * (_levelHeight - LevelExitYOffset);
+        _levelExitPosition = _levelTop + new Vector3(0, -_levelHeight + LevelExitYOffset, BackgroundZOffset);
         _platformWidth = _backgroundWidth * PlatformWidthRatio;
     }
 
@@ -76,10 +77,13 @@ public class LevelLayoutGenerator : MonoBehaviour
         startPlatform.Scale(PlatformHeight, _backgroundWidth);
 
         Vector3 platformXOffset = Vector3.right * (_backgroundWidth - _platformWidth) / 2;
-        Vector3 currentCellPosition = _levelTop;
+        Vector3 moneyXOffset = Vector3.right * (_backgroundWidth - 1) / 2;
 
+        Vector3 currentCellPosition = _levelTop;
         int currentCellNumber = 1;
-        int lastCellNumber = _levelHeight - LevelExitYOffset;
+        int lastCellNumber = (int)(_levelHeight - LevelExitYOffset - LevelExitHeight / 2);
+
+        float moneySpawnChance;
 
         while (currentCellNumber < lastCellNumber)
         {
@@ -91,7 +95,10 @@ public class LevelLayoutGenerator : MonoBehaviour
             }
             else
             {
+                moneySpawnChance = Random.value;
 
+                if (moneySpawnChance < MoneyFrequency)
+                    GenerateMoneySpot(currentCellPosition + moneyXOffset * Random.Range(-1.0f, 1.0f));
             }
 
             currentCellNumber++;
@@ -105,6 +112,11 @@ public class LevelLayoutGenerator : MonoBehaviour
         int randomIndex = Random.Range(0, _enemyPrefabs.Length);
         Enemy enemy = Instantiate(_enemyPrefabs[randomIndex]);
         platform.SetObject(enemy.gameObject);
+    }
+
+    private void GenerateMoneySpot(Vector3 position)
+    {
+        Instantiate(_moneyPrefab, position, Quaternion.identity, transform);
     }
 
     private void GenerateLevelExit()
