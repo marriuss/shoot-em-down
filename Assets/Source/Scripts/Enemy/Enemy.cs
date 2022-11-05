@@ -1,19 +1,24 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Ragdoll))]
 public class Enemy : MonoBehaviour
 {
-    [SerializeField, Min(1)] private int _health;
+    [SerializeField, Min(1)] private int _maxHealth;
     [SerializeField] private Head _head;
     [SerializeField] private Body _body;
 
     private Ragdoll _ragdoll;
     private Animator _animator;
     private Rigidbody _rigidbody;
+
+    public UnityAction<Enemy> KnockedOut;
+
+    public int Health { get; private set; }
+    public bool IsKnockedOut { get; private set; }
 
     private void Awake()
     {
@@ -23,12 +28,13 @@ public class Enemy : MonoBehaviour
         Collider[] colliders = GetComponentsInChildren<Collider>();
         List<Collider> ragdollColliders = new List<Collider>();
 
+        Collider headCollider = _head.GetComponent<Collider>();
+        Collider bodyCollider = _body.GetComponent<Collider>();
+
         foreach (Collider collider in colliders)
         {
-            if (collider == _head.GetComponent<Collider>() || collider == _body.GetComponent<Collider>())
-                continue;
-
-            ragdollColliders.Add(collider);
+            if (collider != headCollider && collider != bodyCollider)
+                ragdollColliders.Add(collider);
         }
 
         _ragdoll = GetComponent<Ragdoll>();
@@ -38,29 +44,28 @@ public class Enemy : MonoBehaviour
     private void OnEnable()
     {
         _head.WasShot += OnHeadShot;
+        _body.WasShot += OnBodyShot;
     }
 
     private void OnDisable()
     {
         _head.WasShot -= OnHeadShot;
+        _body.WasShot -= OnBodyShot;
     }
 
     private void Start()
     {
         SwitchPhysics(false);
+        _head.Initialize(this);
+        _body.Initialize(this);
+        Health = _maxHealth;
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void TakeDamage()
     {
-        if (collision.collider.TryGetComponent(out Bullet bullet))
-            TakeDamage(bullet.Damage);
-    }
+        Health--;
 
-    private void TakeDamage(int damage)
-    {
-        _health -= damage;
-
-        if (_health < 0)
+        if (Health <= 0)
             KnockOut();
     }
 
@@ -69,8 +74,14 @@ public class Enemy : MonoBehaviour
         KnockOut();
     }
 
+    private void OnBodyShot()
+    {
+        TakeDamage();
+    }
+
     private void KnockOut()
     {
+        IsKnockedOut = true;
         SwitchPhysics(true);
     }
 

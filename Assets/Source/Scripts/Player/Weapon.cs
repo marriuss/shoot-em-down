@@ -16,7 +16,8 @@ public class Weapon : MonoBehaviour
     private Rigidbody _rigidbody;
     private float _lastShotTime;
 
-    public UnityAction<int> CollectedMoney;
+    public UnityAction<Collider> HitCollider;
+    public UnityAction<Collider> ShotCollider; 
 
     private void Awake()
     {
@@ -36,8 +37,7 @@ public class Weapon : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.TryGetComponent(out Money money))
-            CollectedMoney?.Invoke(money.Value);
+        HitCollider?.Invoke(collision.collider);
     }
 
     public void Translate(Vector3 position)
@@ -69,9 +69,6 @@ public class Weapon : MonoBehaviour
     private void OnBulletHitCollider(Bullet bullet, Collider hitCollider)
     {
         bullet.HitCollider -= OnBulletHitCollider;
-
-        if (hitCollider.TryGetComponent(out Money money))
-            CollectedMoney?.Invoke(money.Value);
+        ShotCollider?.Invoke(hitCollider);
     }
-
 }

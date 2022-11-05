@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Player : MonoBehaviour
 {
@@ -7,6 +8,9 @@ public class Player : MonoBehaviour
 
     public int Money { get; private set; }
     public Weapon CurrentWeapon { get; private set; }
+
+    public UnityAction Crashed;
+    public UnityAction<Collider> ShotCollider;
 
     private void Start()
     {
@@ -22,17 +26,42 @@ public class Player : MonoBehaviour
     private void EquipWeapon(Weapon weapon)
     {
         if (CurrentWeapon != null)
-            CurrentWeapon.CollectedMoney -= OnCollectedMoney;
+        {
+            CurrentWeapon.ShotCollider -= OnShotCollider;
+            CurrentWeapon.HitCollider -= OnWeaponHitCollider;
+        }
 
         CurrentWeapon = weapon;
-        weapon.CollectedMoney += OnCollectedMoney;
+        weapon.ShotCollider += OnShotCollider;
+        weapon.HitCollider += OnWeaponHitCollider;
     }
 
-    private void OnCollectedMoney(int value)
+    private void OnShotCollider(Collider collider)
     {
-        if (value < 0)
-            throw new ArgumentException();
+        if (collider.TryGetComponent(out Money money))
+        {
+            AddMoney(money);
+        }
+        else
+        {
+            ShotCollider?.Invoke(collider);
+        }
+    }
 
-        Money += value;
+    private void OnWeaponHitCollider(Collider collider)
+    {
+        if (collider.TryGetComponent(out Money money))
+        {
+            AddMoney(money);
+        }
+        else if (collider.TryGetComponent(out Platform platform))
+        {
+            Crashed?.Invoke();
+        }
+    }
+
+    private void AddMoney(Money money)
+    {
+        Money += money.Value;
     }
 }

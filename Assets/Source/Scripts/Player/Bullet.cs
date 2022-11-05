@@ -11,8 +11,6 @@ public class Bullet : MonoBehaviour
 
     private Rigidbody _rigidbody;
 
-    public int Damage => _damage;
-
     public UnityAction<Bullet, Collider> HitCollider;
 
     private void Awake()
@@ -29,10 +27,13 @@ public class Bullet : MonoBehaviour
     {
         Collider collider = collision.collider;
 
-        if (collider.TryGetComponent(out Weapon _))
-            return;
+        if (collider.TryGetComponent(out Weapon _) == false)
+            HitCollider?.Invoke(this, collider);
+    }
 
-        HitCollider?.Invoke(this, collider);
-        Destroy(gameObject);
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.collider.TryGetComponent(out Weapon _) == false)
+            Destroy(gameObject);
     }
 }
