@@ -35,6 +35,15 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Position"",
+                    ""type"": ""Value"",
+                    ""id"": ""88bf47cf-7987-4970-a51d-8d5fe0c5946b"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -59,6 +68,28 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
                     ""action"": ""Shoot"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b4b66f59-1dcb-4083-8b77-80cdc0e4e830"",
+                    ""path"": ""<Touchscreen>/primaryTouch/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""TouchScreen"",
+                    ""action"": ""Position"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a7aaa8db-6749-4647-9756-141e7353b770"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse"",
+                    ""action"": ""Position"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -79,6 +110,7 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
         // Weapon
         m_Weapon = asset.FindActionMap("Weapon", throwIfNotFound: true);
         m_Weapon_Shoot = m_Weapon.FindAction("Shoot", throwIfNotFound: true);
+        m_Weapon_Position = m_Weapon.FindAction("Position", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -139,11 +171,13 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Weapon;
     private IWeaponActions m_WeaponActionsCallbackInterface;
     private readonly InputAction m_Weapon_Shoot;
+    private readonly InputAction m_Weapon_Position;
     public struct WeaponActions
     {
         private @PlayerActions m_Wrapper;
         public WeaponActions(@PlayerActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Shoot => m_Wrapper.m_Weapon_Shoot;
+        public InputAction @Position => m_Wrapper.m_Weapon_Position;
         public InputActionMap Get() { return m_Wrapper.m_Weapon; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -156,6 +190,9 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
                 @Shoot.started -= m_Wrapper.m_WeaponActionsCallbackInterface.OnShoot;
                 @Shoot.performed -= m_Wrapper.m_WeaponActionsCallbackInterface.OnShoot;
                 @Shoot.canceled -= m_Wrapper.m_WeaponActionsCallbackInterface.OnShoot;
+                @Position.started -= m_Wrapper.m_WeaponActionsCallbackInterface.OnPosition;
+                @Position.performed -= m_Wrapper.m_WeaponActionsCallbackInterface.OnPosition;
+                @Position.canceled -= m_Wrapper.m_WeaponActionsCallbackInterface.OnPosition;
             }
             m_Wrapper.m_WeaponActionsCallbackInterface = instance;
             if (instance != null)
@@ -163,6 +200,9 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
                 @Shoot.started += instance.OnShoot;
                 @Shoot.performed += instance.OnShoot;
                 @Shoot.canceled += instance.OnShoot;
+                @Position.started += instance.OnPosition;
+                @Position.performed += instance.OnPosition;
+                @Position.canceled += instance.OnPosition;
             }
         }
     }
@@ -188,5 +228,6 @@ public partial class @PlayerActions : IInputActionCollection2, IDisposable
     public interface IWeaponActions
     {
         void OnShoot(InputAction.CallbackContext context);
+        void OnPosition(InputAction.CallbackContext context);
     }
 }

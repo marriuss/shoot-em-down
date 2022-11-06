@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -10,11 +11,19 @@ public class Weapon : MonoBehaviour
     [SerializeField] private Bullet _bulletPrefab;
     [SerializeField] private WeaponStats _stats;
 
-    private const float KnockbackStrength = 9;
+    private const float MaxShootAngle = 20f;
+    private const float VelocityModifier = 0.9f;
+    private const float KnockbackAcceleration = 20;
+    private const float KnockbackStrength = 20;
 
     private PlayerShooter _playerShooter;
     private Rigidbody _rigidbody;
     private float _lastShotTime;
+    private bool _shot;
+
+    private Vector3 _bulletSpawnPointPosition => _bulletSpawnPoint.position;
+    private Vector3 _shootingPointPosition => _shootingPoint.position;
+    private Vector3 _shootingVector => _bulletSpawnPointPosition - _shootingPointPosition;
 
     public UnityAction<Collider> HitCollider;
     public UnityAction<Collider> ShotCollider; 
@@ -35,6 +44,11 @@ public class Weapon : MonoBehaviour
         _playerShooter.PlayerShot -= OnPlayerShot;
     }
 
+    private void FixedUpdate()
+    {
+        _rigidbody.velocity *= VelocityModifier;
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         HitCollider?.Invoke(collision.collider);
@@ -45,25 +59,35 @@ public class Weapon : MonoBehaviour
         _rigidbody.position = position;
     }
 
-    private void OnPlayerShot()
+    private void OnPlayerShot(Vector2 position)
     {
         float currentTime = Time.time;
 
         if (_lastShotTime + _stats.ShootingDelay < currentTime)
         {
             _lastShotTime = currentTime;
+
+            float rotationAngle = Vector2.SignedAngle(position, _bulletSpawnPointPosition);
+
+            if (Mathf.Abs(rotationAngle) > MaxShootAngle)
+            {
+                float koefficient = rotationAngle < 0 ? -1 : 1;
+                rotationAngle = koefficient * MaxShootAngle;
+            }
+
+            Quaternion rotation = Quaternion.AngleAxis(rotationAngle, Vector3.forward);
+            _rigidbody.MoveRotation(_rigidbody.rotation * rotation);
             Shoot();
         }
     }
 
     private void Shoot()
     {
-        Vector3 bulletSpawnPointPosition = _bulletSpawnPoint.position;
-        Vector3 bulletFlyDirection = (bulletSpawnPointPosition - _shootingPoint.position).normalized;
-        Bullet bullet = Instantiate(_bulletPrefab, bulletSpawnPointPosition, Quaternion.identity, gameObject.transform);
+        Bullet bullet = Instantiate(_bulletPrefab, _bulletSpawnPointPosition, Quaternion.identity, gameObject.transform);
         bullet.HitCollider += OnBulletHitCollider;
-        bullet.Fly(bulletFlyDirection);
-        _rigidbody.AddForceAtPosition(-bulletFlyDirection * KnockbackStrength, bulletSpawnPointPosition, ForceMode.VelocityChange);
+        bullet.Fly(_shootingVector);
+        _rigidbody.AddForceAtPosition(-_shootingVector * KnockbackAcceleration, _shootingPointPosition, ForceMode.Acceleration);
+        _rigidbody.velocity -= KnockbackStrength * _shootingVector;
     }
 
     private void OnBulletHitCollider(Bullet bullet, Collider hitCollider)
