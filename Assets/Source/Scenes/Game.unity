@@ -152,7 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a643ad66fab37664792691277c35937b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _startWeapon: {fileID: 3761828529934634524, guid: e640a66e742211b42ab6a53ab3a8bb56, type: 3}
+  _startWeapon: {fileID: -272872464764165269, guid: 564a1306d62ace04f96561e8acf5c3bb, type: 3}
 --- !u!4 &260267411
 Transform:
   m_ObjectHideFlags: 0
@@ -219,9 +219,7 @@ MonoBehaviour:
   _backgroundPrefab: {fileID: 5645342379706967203, guid: 7fbe41b03420aca48914eaa4916c7c19, type: 3}
   _levelExitPrefab: {fileID: 8962422060055017799, guid: 8d009e9b6240012458d39220b16a5da8, type: 3}
   _enemyPrefabs:
-  - {fileID: 3085827742054749926, guid: 4f4f5d33dd3ef7149976017149f91be3, type: 3}
-  - {fileID: 515999976937556190, guid: f5d82187f53fd8142aee0f57ad806671, type: 3}
-  - {fileID: 5125368761893262123, guid: d18be33248e019142ae9eed08e4fc22d, type: 3}
+  - {fileID: 7413937459664533324, guid: 55990f6b536d6bc4f9e8f591102b501e, type: 3}
   _moneyPrefab: {fileID: -8172347848452896061, guid: fd7e7e83bb139b64f9a4bdf3240a7c28, type: 3}
   _levelHeight: 40
 --- !u!1 &565923868
@@ -566,7 +564,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2069587868}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.8499985, z: -0.099999905}
+  m_LocalPosition: {x: 0, y: 2.8499985, z: -0.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

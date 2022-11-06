@@ -19,7 +19,6 @@ public class Weapon : MonoBehaviour
     private PlayerShooter _playerShooter;
     private Rigidbody _rigidbody;
     private float _lastShotTime;
-    private bool _shot;
 
     private Vector3 _bulletSpawnPointPosition => _bulletSpawnPoint.position;
     private Vector3 _shootingPointPosition => _shootingPoint.position;
