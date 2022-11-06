@@ -4,12 +4,14 @@ using UnityEngine.Events;
 public class PlayerShooter : MonoBehaviour
 {
     private PlayerActions _playerActions;
-
-    public UnityAction PlayerShot;
+    private Camera _camera;
+    
+    public UnityAction<Vector2> PlayerShot;
 
     private void Awake()
     {
-        _playerActions = new PlayerActions();    
+        _playerActions = new PlayerActions();   
+        _camera = Camera.main;
     }
 
     private void OnEnable()
@@ -26,6 +28,8 @@ public class PlayerShooter : MonoBehaviour
 
     private void OnShoot()
     {
-        PlayerShot?.Invoke();
+        Vector2 screenShotPosition = _playerActions.Weapon.Position.ReadValue<Vector2>();
+        Vector2 worldShotPosition = _camera.ScreenToWorldPoint(screenShotPosition);
+        PlayerShot?.Invoke(worldShotPosition);
     }
 }

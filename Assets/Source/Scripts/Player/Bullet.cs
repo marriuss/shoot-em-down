@@ -7,7 +7,8 @@ public class Bullet : MonoBehaviour
 {
     [SerializeField] private int _damage;
 
-    private const float Speed = 10;
+    private const float Speed = 20;
+    private const float DestructionDelay = 1f;
 
     private Rigidbody _rigidbody;
 
@@ -28,12 +29,9 @@ public class Bullet : MonoBehaviour
         Collider collider = collision.collider;
 
         if (collider.TryGetComponent(out Weapon _) == false)
+        {
             HitCollider?.Invoke(this, collider);
-    }
-
-    private void OnCollisionExit(Collision collision)
-    {
-        if (collision.collider.TryGetComponent(out Weapon _) == false)
-            Destroy(gameObject);
+            Destroy(gameObject, DestructionDelay);
+        }
     }
 }

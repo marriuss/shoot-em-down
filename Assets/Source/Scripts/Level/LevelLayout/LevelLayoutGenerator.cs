@@ -12,10 +12,10 @@ public class LevelLayoutGenerator : MonoBehaviour
     [SerializeField, Min(MinLevelHeght)] private int _levelHeight;
 
     private const float MinLevelHeght = 10;
-    private const float PlatformWidthRatio = 0.4f;
+    private const float PlatformWidthRatio = 0.35f;
     private const float BackgroundWidthRatio = 0.7f;
-    private const float PlatformHeight = 1;
-    private const float LevelExitHeight = PlatformHeight * 2;
+    private const float PlatformHeight = 0.2f;
+    private const float LevelExitHeight = 5;
     private const int PlatformsYOffset = 5;
     private const int LevelExitYOffset = 5;
     private const float BackgroundZOffset = 0.5f;
@@ -37,7 +37,7 @@ public class LevelLayoutGenerator : MonoBehaviour
         _backgroundWidth = _cameraWidth * BackgroundWidthRatio;
         _borderWidth = _cameraWidth * (1 - BackgroundWidthRatio);
         _levelTop = _levelStartPoint.position;
-        _levelCenter = _levelTop + Vector3.down * (_levelHeight * 0.5f);
+        _levelCenter = _levelTop + Vector3.down * (_levelHeight / 2);
         _levelExitPosition = _levelTop + new Vector3(0, -_levelHeight + LevelExitYOffset, BackgroundZOffset);
         _platformWidth = _backgroundWidth * PlatformWidthRatio;
     }
@@ -111,7 +111,7 @@ public class LevelLayoutGenerator : MonoBehaviour
         platform.Scale(PlatformHeight, _platformWidth);
         int randomIndex = Random.Range(0, _enemyPrefabs.Length);
         Enemy enemy = Instantiate(_enemyPrefabs[randomIndex]);
-        platform.SetObject(enemy.gameObject);
+        platform.SetObjectOnTop(enemy.gameObject);
     }
 
     private void GenerateMoneySpot(Vector3 position)

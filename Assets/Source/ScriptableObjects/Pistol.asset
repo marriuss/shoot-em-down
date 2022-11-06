@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e45e86d7754d79408b7542c2d5ee12e, type: 3}
   m_Name: Pistol
   m_EditorClassIdentifier: 
+  _name: Pistol
   _magazineCapacity: 20
   _shootingDelay: 0.2

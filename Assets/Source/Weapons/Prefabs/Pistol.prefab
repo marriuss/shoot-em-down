@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 220704371}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: ShootingPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 220704370}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.042, y: 0.073, z: 0}
+  m_LocalPosition: {x: -0.042, y: 0.06, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -47,8 +47,8 @@ GameObject:
   - component: {fileID: 3761828529934634524}
   - component: {fileID: 1082660972}
   - component: {fileID: 1082660973}
-  m_Layer: 0
-  m_Name: Pistol 1
+  m_Layer: 3
+  m_Name: Pistol
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -61,7 +61,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2738520558268228719}
-  m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
@@ -70,7 +70,7 @@ Transform:
   - {fileID: 220704371}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!33 &1937997863159198064
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -172,12 +172,12 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2738520558268228719}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: d4826e8e91845af42b6c544e54da9cf8, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.48595455, y: 0.15560764, z: 0.06887517}
-  m_Center: {x: 0.06441294, y: 0.038124856, z: 0.0000072345138}
+  m_Size: {x: 0.48595455, y: 0.15699711, z: 0.06887517}
+  m_Center: {x: 0.06441294, y: 0.03743013, z: 0.0000072345138}
 --- !u!65 &1082660973
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -189,8 +189,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.1706065, y: 0.29852107, z: 0.06887517}
-  m_Center: {x: -0.093261115, y: -0.03398569, z: 0.0000072345138}
+  m_Size: {x: 0.1504912, y: 0.3010354, z: 0.06887517}
+  m_Center: {x: -0.10331903, y: -0.03524284, z: 0.0000072345138}
 --- !u!1 &3431395788675659662
 GameObject:
   m_ObjectHideFlags: 0
@@ -200,7 +200,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4109617442749981714}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: BulletSpawnPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -215,7 +215,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3431395788675659662}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.294, y: 0.0834, z: 0}
+  m_LocalPosition: {x: 0.294, y: 0.06, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -12,8 +12,8 @@ public class Weapon : MonoBehaviour
     [SerializeField] private WeaponStats _stats;
 
     private const float MaxShootAngle = 20f;
-    private const float VelocityModifier = 0.9f;
-    private const float KnockbackAcceleration = 20;
+    private const float VelocityModifier = 1f;
+    private const float KnockbackAcceleration = 25;
     private const float KnockbackStrength = 20;
 
     private PlayerShooter _playerShooter;
@@ -76,7 +76,7 @@ public class Weapon : MonoBehaviour
             }
 
             Quaternion rotation = Quaternion.AngleAxis(rotationAngle, Vector3.forward);
-            _rigidbody.MoveRotation(_rigidbody.rotation * rotation);
+            _rigidbody.rotation *= rotation;
             Shoot();
         }
     }
