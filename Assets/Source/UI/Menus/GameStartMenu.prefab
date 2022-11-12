@@ -148,6 +148,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6965299647138944246}
     m_Modifications:
+    - target: {fileID: 5711050500808064723, guid: dff5d7a5b76a1814093679603d723f2b, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 02fea1fb776e0ad43a5e684a1ab0ce9e, type: 2}
+    - target: {fileID: 5711050500808064723, guid: dff5d7a5b76a1814093679603d723f2b, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 942589445191879500, guid: 02fea1fb776e0ad43a5e684a1ab0ce9e, type: 2}
     - target: {fileID: 5910741477193916935, guid: dff5d7a5b76a1814093679603d723f2b, type: 3}
       propertyPath: m_Name
       value: PlayButton

@@ -7,7 +7,6 @@ using UnityEngine.Events;
 public class PlayerPointsTracker : ResetableMonoBehaviour
 {
     [SerializeField] private Player _player;
-    [SerializeField] private Menu _exitLevelMenu;
 
     private const int BodyShotPoints = 20;
     private const int KnockOutPoints = 100;
