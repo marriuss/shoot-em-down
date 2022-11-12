@@ -1,21 +1,35 @@
 using UnityEngine;
 
-public class PlayerWeaponFollower : MonoBehaviour
+public class PlayerWeaponFollower : ResetableMonoBehaviour
 {
     [SerializeField] private Player _player;
-    [SerializeField] private float _speed;
+    [SerializeField] private Vector3 _rotation;
 
-    private Transform _targetWeapon;
+    private Weapon _targetWeapon;
+
+    private void Awake()
+    {
+        transform.Rotate(_rotation);
+    }
 
     private void Update()
     {
-        if (_player.CurrentWeapon == null)
+        if (_targetWeapon == null)
             return;
 
-        _targetWeapon = _player.CurrentWeapon.transform;
+        Vector3 newPosition = _targetWeapon.transform.position;
+        newPosition.z = transform.position.z;
 
-        Vector3 currentPosition = transform.position;
-        Vector3 newPosition = new Vector3(currentPosition.x, _targetWeapon.position.y, currentPosition.z);
         transform.position = newPosition;
+    }
+
+    public override void SetStartState()
+    {
+        _targetWeapon = _player.CurrentWeapon;
+    }
+
+    public void StopFollowing()
+    {
+        _targetWeapon = null;
     }
 }
