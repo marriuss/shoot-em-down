@@ -6,11 +6,17 @@ public class Platform : LevelLayoutPart
     [SerializeField] private Transform _objectPlacementPosition;
 
     private Bounds _bounds;
+    private Enemy _attachedEnemy;
 
-    public void SetObjectOnTop(GameObject gameObject)
+    public void Initialize(Enemy enemyPrefab)
     {
-        Vector3 center = _bounds.center;
-        gameObject.transform.position = _objectPlacementPosition.position;
+        _attachedEnemy = Instantiate(enemyPrefab);
+        PlaceEnemy();
+    }
+
+    public void PlaceEnemy()
+    {
+        _attachedEnemy.Translate(_objectPlacementPosition.position);
     }
 
     protected override Vector3 GetNewLocalScale(float targetHeight, float targetWidth)

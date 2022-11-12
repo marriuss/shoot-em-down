@@ -1,58 +1,74 @@
+using System.Collections.Generic;
 using UnityEngine;
 
-public class LevelLayoutGenerator : MonoBehaviour
+public class LevelLayoutGenerator : ResetableMonoBehaviour
 {
     [SerializeField] private Transform _levelStartPoint;
+    [SerializeField] private LevelExit _levelExit;
+    [SerializeField] private Background _background;
     [SerializeField] private Border _borderPrefab;
     [SerializeField] private Platform _platformPrefab;
-    [SerializeField] private Background _backgroundPrefab;
-    [SerializeField] private LevelExit _levelExitPrefab;
     [SerializeField] private Enemy[] _enemyPrefabs;
     [SerializeField] private Money _moneyPrefab;
-    [SerializeField, Min(MinLevelHeght)] private int _levelHeight;
+    [SerializeField, Min(MinLevelHeght)] private float _levelHeight;
+    [SerializeField, Min(MinLevelWidth)] private float _levelWidth;
 
-    private const float MinLevelHeght = 10;
-    private const float PlatformWidthRatio = 0.35f;
-    private const float BackgroundWidthRatio = 0.7f;
+    private const float MinLevelHeght = 20;
+    private const float MinLevelWidth = 3;
+    private const float PlatformWidthRatio = 0.3f;
+    private const float BackgroundWidthRatio = 0.9f;
     private const float PlatformHeight = 0.2f;
-    private const float LevelExitHeight = 5;
+    private const float LevelExitHeight = 3;
     private const int PlatformsYOffset = 5;
-    private const int LevelExitYOffset = 5;
+    private const int LevelExitYOffset = 4;
     private const float BackgroundZOffset = 0.5f;
     private const float MoneyFrequency = 0.3f;
 
-    private Camera _camera;
-    private float _cameraWidth;
     private float _backgroundWidth;
     private float _borderWidth;
     private float _platformWidth;
     private Vector3 _levelTop;
     private Vector3 _levelCenter;
     private Vector3 _levelExitPosition;
+    private Vector3 _backgroundPosition;
+    private List<Platform> _platforms;
+    private List<Money> _moneySpots;
 
     private void Awake()
     {
-        _camera = Camera.main;
-        _cameraWidth = _camera.GetOrthographicBounds().size.x;
-        _backgroundWidth = _cameraWidth * BackgroundWidthRatio;
-        _borderWidth = _cameraWidth * (1 - BackgroundWidthRatio);
+        _backgroundWidth = _levelWidth * BackgroundWidthRatio;
+        _borderWidth = _levelWidth * (1 - BackgroundWidthRatio);
         _levelTop = _levelStartPoint.position;
         _levelCenter = _levelTop + Vector3.down * (_levelHeight / 2);
         _levelExitPosition = _levelTop + new Vector3(0, -_levelHeight + LevelExitYOffset, BackgroundZOffset);
+        _backgroundPosition = _levelCenter + Vector3.forward * BackgroundZOffset;
         _platformWidth = _backgroundWidth * PlatformWidthRatio;
+        _platforms = new List<Platform>();
+        _moneySpots = new List<Money>();
     }
 
     private void Start()
     {
         GenerateBorders();
-        GenerateBackround();
-        GenerateInnerLevel();
-        GenerateLevelExit();
+        SetBackground();
+        SetLevelExit();
+        GenerateInnerLayout();
+    }
+
+    public void GenerateNewInnerLayout()
+    {
+        SetInnerLayout();
+    }
+
+    public override void SetStartState()
+    {
+        foreach (Platform platform in _platforms)
+            platform.PlaceEnemy();
     }
 
     private void GenerateBorders()
     {
-        float xBorderOffset = _cameraWidth / 2;
+        float xBorderOffset = (_backgroundWidth + _borderWidth) / 2;
 
         Vector3 leftStartPosition = _levelCenter;
         leftStartPosition.x = -xBorderOffset;
@@ -65,64 +81,90 @@ public class LevelLayoutGenerator : MonoBehaviour
         Instantiate(leftBorder, rightStartPosition, Quaternion.identity, transform);
     }
 
-    private void GenerateBackround()
-    {
-        Background background = Instantiate(_backgroundPrefab, _levelCenter + Vector3.forward * BackgroundZOffset, Quaternion.identity, transform);
-        background.Scale(_levelHeight, _backgroundWidth);
-    }
-
-    private void GenerateInnerLevel()
+    private void GenerateInnerLayout()
     {
         Platform startPlatform = Instantiate(_platformPrefab, _levelTop, Quaternion.identity, transform);
         startPlatform.Scale(PlatformHeight, _backgroundWidth);
 
-        Vector3 platformXOffset = Vector3.right * (_backgroundWidth - _platformWidth) / 2;
-        Vector3 moneyXOffset = Vector3.right * (_backgroundWidth - 1) / 2;
-
-        Vector3 currentCellPosition = _levelTop;
+        Vector3 currentCellPosition = _levelTop + Vector3.down;
         int currentCellNumber = 1;
-        int lastCellNumber = (int)(_levelHeight - LevelExitYOffset - LevelExitHeight / 2);
 
         float moneySpawnChance;
+        Platform platform;
+        Money moneySpot;
 
-        while (currentCellNumber < lastCellNumber)
+        float lastYPosition = _levelExitPosition.y + LevelExitYOffset;
+
+        while (currentCellPosition.y > lastYPosition)
         {
-            currentCellPosition += Vector3.down;
-
             if (currentCellNumber % PlatformsYOffset == 0)
             {
-                GeneratePlatform(currentCellPosition + platformXOffset * RandomSign());
+                platform = GeneratePlatform(currentCellPosition);
+                _platforms.Add(platform);
             }
             else
             {
                 moneySpawnChance = Random.value;
 
                 if (moneySpawnChance < MoneyFrequency)
-                    GenerateMoneySpot(currentCellPosition + moneyXOffset * Random.Range(-1.0f, 1.0f));
+                {
+                    moneySpot = GenerateMoneySpot(currentCellPosition);
+                    _moneySpots.Add(moneySpot);
+                }
             }
 
+            currentCellPosition += Vector3.down;
             currentCellNumber++;
         }
     }
 
-    private void GeneratePlatform(Vector3 position)
+    private Platform GeneratePlatform(Vector3 position)
     {
         Platform platform = Instantiate(_platformPrefab, position, Quaternion.identity, transform);
         platform.Scale(PlatformHeight, _platformWidth);
         int randomIndex = Random.Range(0, _enemyPrefabs.Length);
-        Enemy enemy = Instantiate(_enemyPrefabs[randomIndex]);
-        platform.SetObjectOnTop(enemy.gameObject);
+        platform.Initialize(_enemyPrefabs[randomIndex]);
+        return platform;
     }
 
-    private void GenerateMoneySpot(Vector3 position)
+    private Money GenerateMoneySpot(Vector3 position)
     {
-        Instantiate(_moneyPrefab, position, Quaternion.identity, transform);
+        return Instantiate(_moneyPrefab, position, Quaternion.identity, transform);
     }
 
-    private void GenerateLevelExit()
+    private void SetBackground()
     {
-        LevelExit levelExit = Instantiate(_levelExitPrefab, _levelExitPosition, Quaternion.identity, transform);
-        levelExit.Scale(LevelExitHeight, _backgroundWidth);
+        _background.SetSize(_backgroundWidth, _levelHeight);
+        _background.transform.position = _backgroundPosition;
+    }
+
+    private void SetLevelExit()
+    {
+        _levelExit.SetSize(_backgroundWidth, LevelExitHeight);
+        _levelExit.transform.position = _levelExitPosition;
+    }
+
+    private void SetInnerLayout()
+    {
+        float xPosition = _levelTop.x;
+        float yPosition;
+        float zPosition = _levelTop.z;
+
+        float platformXOffset = (_backgroundWidth - _platformWidth) / 2;
+        float moneyXOffset = (_backgroundWidth - 1) / 2;
+
+        foreach (Platform platform in _platforms)
+        {
+            yPosition = platform.transform.position.y;
+            platform.transform.position = new Vector3(xPosition + platformXOffset * RandomSign(), yPosition, zPosition);
+            platform.PlaceEnemy();
+        }
+
+        foreach (Money moneySpot in _moneySpots)
+        {
+            yPosition = moneySpot.transform.position.y;
+            moneySpot.transform.position = new Vector3(xPosition + moneyXOffset * Random.Range(-1.0f, 1.0f), yPosition, zPosition);
+        }
     }
 
     private int RandomSign() => Random.value < 0.5f ? -1 : 1;

@@ -1,31 +1,23 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-[RequireComponent(typeof(MeshFilter))]
-public class LevelExit : LevelLayoutPart
+[RequireComponent(typeof(BoxCollider))]
+public class LevelExit : MonoBehaviour
 {
-    public UnityAction PlayerFinishedLevel;
+    [SerializeField] private RectTransform _canvasRectTransform;
 
-    protected override Vector3 GetBoundsSize()
-    {
-        return GetComponent<MeshFilter>().mesh.bounds.size;
-    }
-
-    protected override Vector3 GetNewLocalScale(float targetHeight, float targetWidth)
-    {
-        return new Vector3(targetHeight / BoundsSize.x, -1, targetWidth / BoundsSize.z);
-    }
-
-    protected override void Initialize() 
-    {
-        transform.rotation = Quaternion.Euler(0, 90, 90);
-    }
+    public UnityAction PlayerExitLevel;
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.TryGetComponent(out Weapon _))
-            PlayerFinishedLevel?.Invoke();
+            PlayerExitLevel?.Invoke();
+    }
+
+    public void SetSize(float width, float height)
+    {
+        transform.localScale = new Vector3(width, height, 1);
+        _canvasRectTransform.sizeDelta = new Vector2(width, height);
+        _canvasRectTransform.SetParent(transform);
     }
 }

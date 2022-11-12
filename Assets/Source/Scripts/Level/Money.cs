@@ -1,11 +1,21 @@
 using UnityEngine;
 
-public class Money : MonoBehaviour
+[RequireComponent(typeof(BoxCollider))]
+public class Money : ResetableMonoBehaviour
 {
     [SerializeField] private int _value;
     [SerializeField] private float _rotationAnglePerSecond;
 
+    private BoxCollider _boxCollider;
+    private MeshRenderer[] _meshRenderers;
+
     public int Value => _value;
+
+    private void Awake()
+    {
+        _boxCollider = GetComponent<BoxCollider>();
+        _meshRenderers = GetComponentsInChildren<MeshRenderer>();
+    }
 
     private void Update()
     {
@@ -17,6 +27,19 @@ public class Money : MonoBehaviour
         Collider collider = collision.collider;
 
         if (collider.TryGetComponent(out Weapon _) || collider.TryGetComponent(out Bullet _))
-            Destroy(gameObject);
+            ChangeAppearance(false);
+    }
+
+    public override void SetStartState()
+    {
+        ChangeAppearance(true);
+    }
+
+    private void ChangeAppearance(bool isVisible)
+    {
+        _boxCollider.enabled = isVisible;
+
+        foreach (MeshRenderer meshRenderer in _meshRenderers)
+            meshRenderer.enabled = isVisible;
     }
 }
