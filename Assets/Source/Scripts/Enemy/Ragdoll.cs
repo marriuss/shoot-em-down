@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Animator))]
-public class Ragdoll : MonoBehaviour
+public class Ragdoll : ResetableMonoBehaviour
 {
-    private List<Collider> _colliders = new List<Collider>();
+    [SerializeField] private Transform _baseBone;
+    private List<EnemyPart> _enemyParts = new List<EnemyPart>();
 
     private void OnEnable()
     {
@@ -18,25 +18,25 @@ public class Ragdoll : MonoBehaviour
         ChangeEnability(false);
     }
 
-    public void Initialize(List<Collider> colliders)
+    public void Initialize(List<EnemyPart> enemyParts)
     {
-        _colliders = colliders;
+        _enemyParts = enemyParts;
+    }
+
+    public override void SetStartState()
+    {
+        _baseBone.localPosition = Vector3.zero;
     }
 
     private void ChangeEnability(bool isEnable)
     {
         Rigidbody attachedRigidbody;
 
-        foreach (Collider collider in _colliders)
+        foreach (EnemyPart enemyPart in _enemyParts)
         {
-            collider.enabled = isEnable;
-            attachedRigidbody = collider.GetComponent<Rigidbody>();
-
-            if (attachedRigidbody != null)
-            {
-                attachedRigidbody.useGravity = isEnable;
-                attachedRigidbody.isKinematic = !isEnable;
-            }
+            attachedRigidbody = enemyPart.Rigidbody;
+            attachedRigidbody.useGravity = isEnable;
+            attachedRigidbody.isKinematic = !isEnable;
         }
     }
 }

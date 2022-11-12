@@ -1,34 +1,23 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-[RequireComponent(typeof(Collider))]
-public abstract class EnemyPart : MonoBehaviour
+[RequireComponent(typeof(Rigidbody))]
+public class EnemyPart : MonoBehaviour
 {
-    private Collider _collider;
+    public event UnityAction<EnemyPart> WasShot;
 
-    public UnityAction WasShot;
+    public Enemy Enemy { get; private set; }
+    public Rigidbody Rigidbody { get; private set; }
 
     private void Awake()
     {
-        _collider = GetComponent<Collider>();
+        Rigidbody = GetComponent<Rigidbody>();
     }
-
-    private void OnEnable()
-    {
-        _collider.enabled = true;
-    }
-
-    private void OnDisable()
-    {
-        _collider.enabled = false;
-    }
-
-    public Enemy Enemy { get; private set; }
 
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.collider.TryGetComponent(out Bullet _))
-            WasShot?.Invoke();
+            WasShot?.Invoke(this);
     }
 
     public void Initialize(Enemy enemy)

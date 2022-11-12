@@ -1,82 +1,89 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.Events;
 
 [RequireComponent(typeof(Animator))]
-[RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Ragdoll))]
-public class Enemy : MonoBehaviour
+[RequireComponent(typeof(Rigidbody))]
+public class Enemy : ResetableMonoBehaviour
 {
     [SerializeField, Min(1)] private int _maxHealth;
-    [SerializeField] private Head _head;
-    [SerializeField] private Body _body;
 
-    private Ragdoll _ragdoll;
-    private Animator _animator;
+    private Head _head;
     private Rigidbody _rigidbody;
+    private Animator _animator;
+    private Ragdoll _ragdoll;
+    private List<EnemyPart> _enemyParts;
 
-    public UnityAction<Enemy> KnockedOut;
-
-    public int Health { get; private set; }
+    public Health Health { get; private set; }
     public bool IsKnockedOut { get; private set; }
 
     private void Awake()
     {
-        _animator = GetComponent<Animator>();
         _rigidbody = GetComponent<Rigidbody>();
+        _rigidbody.useGravity = false;
 
-        Collider[] colliders = GetComponentsInChildren<Collider>();
-        List<Collider> ragdollColliders = new List<Collider>();
+        _animator = GetComponent<Animator>();
+        _ragdoll = GetComponent<Ragdoll>();
+        _enemyParts = GetComponentsInChildren<EnemyPart>().ToList();
 
-        Collider headCollider = _head.GetComponent<Collider>();
-        Collider bodyCollider = _body.GetComponent<Collider>();
-
-        foreach (Collider collider in colliders)
+        foreach (EnemyPart enemyPart in _enemyParts)
         {
-            if (collider != headCollider && collider != bodyCollider)
-                ragdollColliders.Add(collider);
+            Head head = enemyPart as Head;
+
+            if (head != null)
+                _head = head;
+            
+            enemyPart.Initialize(this);
         }
 
-        _ragdoll = GetComponent<Ragdoll>();
-        _ragdoll.Initialize(ragdollColliders);
+        _ragdoll.Initialize(_enemyParts);
+        SwitchPhysics(false);
+        Health = new Health(_maxHealth);
     }
 
     private void OnEnable()
     {
-        _head.WasShot += OnHeadShot;
-        _body.WasShot += OnBodyShot;
+        foreach (EnemyPart enemyPart in _enemyParts)
+            enemyPart.WasShot += OnEnemyPartWasShot;
     }
 
     private void OnDisable()
     {
-        _head.WasShot -= OnHeadShot;
-        _body.WasShot -= OnBodyShot;
+        foreach (EnemyPart enemyPart in _enemyParts)
+            enemyPart.WasShot -= OnEnemyPartWasShot;
     }
 
-    private void Start()
+    public void Translate(Vector3 position)
+    {
+        transform.position = position;
+    }
+
+    public override void SetStartState()
     {
         SwitchPhysics(false);
-        _head.Initialize(this);
-        _body.Initialize(this);
-        Health = _maxHealth;
+        Health.Heal();
+        IsKnockedOut = false;
     }
 
     private void TakeDamage()
     {
-        Health--;
+        Health.ApplyDamage(1);
 
-        if (Health <= 0)
+        if (Health.CurrentValue <= 0)
             KnockOut();
     }
 
-    private void OnHeadShot()
+    private void OnEnemyPartWasShot(EnemyPart enemyPart)
     {
-        KnockOut();
-    }
-
-    private void OnBodyShot()
-    {
-        TakeDamage();
+        if (enemyPart == _head)
+        {
+            KnockOut();
+        }
+        else
+        {
+            TakeDamage();
+        }
     }
 
     private void KnockOut()
@@ -89,9 +96,5 @@ public class Enemy : MonoBehaviour
     {
         _ragdoll.enabled = isRagdollEnabled;
         _animator.enabled = !isRagdollEnabled;
-        _head.enabled = !isRagdollEnabled;
-        _body.enabled = !isRagdollEnabled;
-        _rigidbody.isKinematic = isRagdollEnabled;
-        _rigidbody.useGravity = !isRagdollEnabled;
     }
 }
