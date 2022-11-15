@@ -18,7 +18,7 @@ public class LevelLayoutGenerator : ResetableMonoBehaviour
     private const float PlatformWidthRatio = 0.3f;
     private const float BackgroundWidthRatio = 0.9f;
     private const float PlatformHeight = 0.2f;
-    private const float LevelExitHeight = 3;
+    private const float LevelExitHeight = 2;
     private const int PlatformsYOffset = 5;
     private const int LevelExitYOffset = 4;
     private const float BackgroundZOffset = 0.5f;

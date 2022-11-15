@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45ac036a2fe10fc46a62dae7784ecd8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _value: 10
+  _value: 5
   _rotationAnglePerSecond: 60
 --- !u!65 &8884554836619778810
 BoxCollider:

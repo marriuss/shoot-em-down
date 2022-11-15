@@ -7,7 +7,7 @@ public class Bullet : MonoBehaviour
 {
     [SerializeField] private int _damage;
 
-    private const float Speed = 20;
+    private const float Speed = 50;
     private const float DestructionDelay = 1f;
 
     private Rigidbody _rigidbody;

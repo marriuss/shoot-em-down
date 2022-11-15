@@ -13,11 +13,7 @@ public class Weapon : MonoBehaviour
     [SerializeField] private Bullet _bulletPrefab;
     [SerializeField] private WeaponStats _stats;
 
-    private const float MaxShootAngle = 30f;
-    private const float VelocityModifier = 1f;
-    private const float KnockbackAcceleration = 15;
-    private const float KnockbackStrength = 15;
-    private const float ReloadingTimeMultiplier = 4;
+    private const float KnockbackStrength = 25;
 
     private Animator _animator;
     private PlayerShooter _playerShooter;
@@ -33,6 +29,7 @@ public class Weapon : MonoBehaviour
     private Vector3 _shootingPointPosition => _shootingPoint.position;
     private Vector3 _shootingVector => _bulletSpawnPointPosition - _shootingPointPosition;
 
+    public string Name => _stats.Name;
     public Magazine Magazine { get; private set; }
     public int Cost => _stats.Cost;
 
@@ -54,11 +51,6 @@ public class Weapon : MonoBehaviour
         _playerShooter.PlayerShot -= OnPlayerShot;
     }
 
-    private void FixedUpdate()
-    {
-        _rigidbody.velocity *= VelocityModifier;
-    }
-
     private void OnCollisionEnter(Collision collision)
     {
         HitCollider?.Invoke(collision.collider);
@@ -66,7 +58,7 @@ public class Weapon : MonoBehaviour
 
     public void Translate(Vector3 position)
     {
-        _rigidbody.position = position;
+        transform.position = position;
     }
 
     public void SetStartState()
@@ -91,11 +83,6 @@ public class Weapon : MonoBehaviour
 
             float rotationAngle = Vector2.SignedAngle(_shootingVector, position);
             float koefficient = rotationAngle < 0 ? -1 : 1;
-
-            if (Mathf.Abs(rotationAngle) > MaxShootAngle)
-                rotationAngle = koefficient * MaxShootAngle;
-
-            _rigidbody.rotation *= Quaternion.AngleAxis(rotationAngle, Vector3.forward);
             Shoot(koefficient);
         }
     }
@@ -109,10 +96,8 @@ public class Weapon : MonoBehaviour
             Bullet bullet = Instantiate(_bulletPrefab, _bulletSpawnPointPosition, Quaternion.identity, gameObject.transform);
             bullet.HitCollider += OnBulletHitCollider;
             bullet.Fly(_shootingVector);
+            _rigidbody.AddForceAtPosition(-_shootingVector * KnockbackStrength, _shootingPointPosition, ForceMode.VelocityChange);
             _rigidbody.AddTorque(0, 0, koefficient, ForceMode.Acceleration);
-            //_rigidbody.AddTorque(-_shootingVector * KnockbackStrength, ForceMode.VelocityChange);
-            //_rigidbody.AddForceAtPosition(-_shootingVector * KnockbackStrength, _shootingPointPosition, ForceMode.VelocityChange);
-            _rigidbody.velocity -= KnockbackStrength * _shootingVector;
         }
 
         if (Magazine.IsEmpty)

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName ="SO/Create new/Weapon stats")]
@@ -11,6 +9,7 @@ public class WeaponStats : ScriptableObject
     [SerializeField] private int _cost;
     [SerializeField] private Sprite _sprite;
 
+    public string Name => _name;
     public int MagazineCapacity => _magazineCapacity;
     public float ShootingDelay => _shootingDelay;
     public int Cost => _cost;

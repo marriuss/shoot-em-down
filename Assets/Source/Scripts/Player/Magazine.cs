@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 public class Magazine
 {
-    private const float ReloadingTimeModifier = 0.25f;
+    private const float ReloadingTimeModifier = 0.75f;
 
     public event UnityAction<float> AmountChanged;
 
