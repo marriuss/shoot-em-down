@@ -5,25 +5,27 @@ using TMPro;
 public class ShopMenu : Menu
 {
     [SerializeField] private TMP_Text _textContainer;
-    [SerializeField] private List<Weapon> _weapons;
     [SerializeField] private GameObject _content;
     [SerializeField] private WeaponView _weaponViewPrefab;
+    [SerializeField] private WeaponsPool _weaponsPool;
     [SerializeField] private Player _player;
 
     private void OnEnable()
     {
-        foreach (Weapon weapon in _weapons)
+        List<Weapon> weapons = _weaponsPool.GetWeaponsList();
+
+        foreach (Weapon weapon in weapons)
         {
             WeaponView weaponView = Instantiate(_weaponViewPrefab, _content.transform);
             weaponView.Initialize(weapon, _player);
         }
 
-        _player.MoneyChanged += OnMoneyChanged;
+        _player.TotalMoneyChanged += OnMoneyChanged;
     }
 
     private void OnDisable()
     {
-        _player.MoneyChanged -= OnMoneyChanged;
+        _player.TotalMoneyChanged -= OnMoneyChanged;
     }
 
     private void OnMoneyChanged(int newMoneyValue)

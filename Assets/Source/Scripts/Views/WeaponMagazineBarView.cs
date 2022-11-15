@@ -1,32 +1,30 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class WeaponMagazineBarView : BarView
 {
-    [SerializeField] private Weapon _weapon;
+    [SerializeField] private Player _player;
 
-    private void Start()
-    {
-        SetSlider(_weapon.Magazine.MinAmount, _weapon.Magazine.MaxAmount);
-    }
-
-    private void OnEnable()
-    {
-        _weapon.Magazine.AmountChanged += OnBulletsAmountChanged;
-    }
-
-    private void OnDisable()
-    {
-        _weapon.Magazine.AmountChanged += OnBulletsAmountChanged;
-    }
+    private Weapon _weapon;
 
     private void Update()
     {
+        if (_player.CurrentWeapon != _weapon) 
+            ChangeWeapon(_player.CurrentWeapon);
+
         if (_weapon.Magazine.IsReloading)
             Enable();
         else
             Disable();
+    }
+
+    private void ChangeWeapon(Weapon newWeapon)
+    {
+        if (_weapon != null)
+            _weapon.Magazine.AmountChanged -= OnBulletsAmountChanged;
+
+        _weapon = newWeapon;
+        SetSlider(_weapon.Magazine.MinAmount, _weapon.Magazine.MaxAmount);
+        _weapon.Magazine.AmountChanged += OnBulletsAmountChanged;
     }
 
     private void OnBulletsAmountChanged(float newValue)
