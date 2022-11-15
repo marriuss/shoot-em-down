@@ -17,7 +17,9 @@ public class YandexGamesInitializer : MonoBehaviour
 
     private IEnumerator Start()
     {
-#if UNITY_WEBGL && !UNITY_EDITOR
+#if !UNITY_WEBGL || UNITY_EDITOR
+        yield return null;
+#endif
 
         yield return YandexGamesSdk.Initialize();
 
@@ -31,7 +33,5 @@ public class YandexGamesInitializer : MonoBehaviour
             PlayerAccount.RequestPersonalProfileDataPermission();
 
         PlayerAccount.GetPlayerData(_playerDataLoader.LoadData);
-#endif
-        yield return null;
     }
 }

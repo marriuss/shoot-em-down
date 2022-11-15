@@ -1,6 +1,7 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class LevelEnder : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class LevelEnder : MonoBehaviour
     [SerializeField] private PointsTracker _pointsTracker;
     [SerializeField] private Menu _levelEndMenu;
     [SerializeField] private Player _player;
+    [SerializeField] private RaycastTarget _raycastTarget;
 
     private void OnEnable()
     {
@@ -35,10 +37,12 @@ public class LevelEnder : MonoBehaviour
     private IEnumerator WaitForParticleEffect()
     {
         _particleSystem.Play();
+        _raycastTarget.enabled = true;
 
         yield return new WaitForSeconds(_particleSystem.main.duration);
 
         _particleSystem.Stop();
+        _raycastTarget.enabled = false;
         _levelEndMenu.Open();
     }
 }
