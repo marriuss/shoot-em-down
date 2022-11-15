@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class PlayerPointsTracker : ResetableMonoBehaviour
+public class PointsTracker : ResetableMonoBehaviour
 {
     [SerializeField] private Player _player;
 
@@ -18,7 +18,7 @@ public class PlayerPointsTracker : ResetableMonoBehaviour
     private int _enemyShots;
     private int _enemyShotsStreak;
 
-    public UnityAction<int> GotPoints;
+    public event UnityAction<int, Transform> GotPoints;
 
     private float _accuracyMultiplier => Mathf.Clamp(Accuracy, 1f, MaxAccuracyMultiplier);
 
@@ -46,23 +46,24 @@ public class PlayerPointsTracker : ResetableMonoBehaviour
     private void OnPlayerShotCollider(Collider collider)
     {
         int pointsGot = 0;
-        
+
         if (collider.TryGetComponent(out EnemyPart enemyPart))
         {
             Enemy enemy = enemyPart.Enemy;
+            Head head = enemyPart as Head;
 
-            if (enemy.IsKnockedOut)
-                pointsGot += KnockOutPoints;
-
-            if (enemyPart as Head != null)
+            if (head != null)
             {
                 int remainingBodyShotPoints = enemy.Health.CurrentValue * BodyShotPoints;
                 pointsGot += (int)(remainingBodyShotPoints * HeadShotMultiplier);
             }
-            else 
+            else
             {
                 pointsGot += BodyShotPoints;
             }
+
+            if (enemy.IsKnockedOut)
+                pointsGot += KnockOutPoints;
 
             _enemyShots++;
             _enemyShotsStreak++;
@@ -75,12 +76,10 @@ public class PlayerPointsTracker : ResetableMonoBehaviour
         _shotsTotal++;
 
         if (pointsGot > 0)
-            AddPoints(pointsGot);
-    }
-
-    private void AddPoints(int amount)
-    {
-        _points += amount;
-        GotPoints?.Invoke(amount);
+        {
+            Debug.Log("Points");
+            _points += pointsGot;
+            GotPoints?.Invoke(pointsGot, enemyPart.transform);
+        }
     }
 }
