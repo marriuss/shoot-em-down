@@ -1,39 +1,50 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using System.Linq;
 
 public class Player : ResetableMonoBehaviour
 {
     [SerializeField] private Weapon _startWeapon;
+    [SerializeField] private PlayerDataLoader _playerDataLoader;
+    [SerializeField] private PlayerDataSaver _playerDataSaver;
 
-    private int _money;
-    private List<Weapon> _weapons;
+    private int _levelMoney;
+    private int _totalMoney;
+    private HashSet<Weapon> _weapons = new HashSet<Weapon>();
 
-    public event UnityAction<int> MoneyChanged;
+    public event UnityAction<int> TotalMoneyChanged;
     public event UnityAction<Collider> ShotCollider;
+    public event UnityAction<int> CollectedMoney;
 
     public Weapon CurrentWeapon { get; private set; }
     public bool HasWeapon(Weapon weapon) => _weapons.Contains(weapon);
-    public bool CanBuy(Weapon weapon) => _money >= weapon.Cost;
+    public bool CanBuy(Weapon weapon) => _totalMoney >= weapon.Cost;
 
     private void Awake()
     {
-        _weapons = new List<Weapon>();
-        AddWeapon(_startWeapon);
-        EquipWeapon(_startWeapon);
-        ChangeMoneyValue(0);
+        ChangeTotalMoney(_playerDataLoader.Money);
+        _weapons = _playerDataLoader.PlayerWeapons;
+        Weapon currentWeapon = _playerDataLoader.CurrentPlayerWeapon;
+
+        if (currentWeapon == null)
+        {
+            currentWeapon = _startWeapon;
+            AddWeapon(currentWeapon);
+        }
+
+        EquipWeapon(currentWeapon);
+    }
+
+    public override void SetStartState()
+    {
+        _levelMoney = 0;
+        CurrentWeapon.SetStartState();
     }
 
     public void SpawnWeapon(Vector3 position)
     {
         CurrentWeapon.Translate(position);
-    }
-
-    public override void SetStartState()
-    {
-        CurrentWeapon.SetStartState();
     }
 
     public void EquipWeapon(Weapon weapon)
@@ -44,6 +55,9 @@ public class Player : ResetableMonoBehaviour
             CurrentWeapon.HitCollider -= OnWeaponHitCollider;
         }
 
+        if (HasWeapon(weapon) == false)
+            AddWeapon(weapon);
+
         CurrentWeapon = weapon;
         weapon.ShotCollider += OnShotCollider;
         weapon.HitCollider += OnWeaponHitCollider;
@@ -51,15 +65,29 @@ public class Player : ResetableMonoBehaviour
 
     public void BuyWeapon(Weapon weapon)
     {
-        ChangeMoneyValue(_money - weapon.Cost);
+        ChangeTotalMoney(_totalMoney - weapon.Cost);
         AddWeapon(weapon);
+    }
+
+    public void SaveLevelProgress()
+    {
+        ChangeTotalMoney(_totalMoney + _levelMoney);
+        _levelMoney = 0;
+        HashSet<string> weaponsNames = _weapons.Select(weapon => weapon.Name).ToHashSet();
+        _playerDataSaver.SaveData(new PlayerData(CurrentWeapon.Name, weaponsNames, _totalMoney));
+    }
+
+    private void AddWeapon(Weapon weapon)
+    {
+        if (HasWeapon(weapon) == false)
+            _weapons.Add(weapon);
     }
 
     private void OnShotCollider(Collider collider)
     {
         if (collider.TryGetComponent(out Money money))
         {
-            AddMoney(money);
+            CollectMoney(money);
         }
         else
         {
@@ -70,22 +98,19 @@ public class Player : ResetableMonoBehaviour
     private void OnWeaponHitCollider(Collider collider)
     {
         if (collider.TryGetComponent(out Money money))
-            AddMoney(money);
+            CollectMoney(money);
     }
 
-    private void AddMoney(Money money)
+    private void CollectMoney(Money money)
     {
-        ChangeMoneyValue(_money + money.Value);
+        int moneyAmount = money.Value;
+        _levelMoney += moneyAmount;
+        CollectedMoney?.Invoke(moneyAmount);
     }
 
-    private void ChangeMoneyValue(int newValue)
+    private void ChangeTotalMoney(int newAmount)
     {
-        _money = newValue;
-        MoneyChanged?.Invoke(_money);
-    }
-
-    private void AddWeapon(Weapon weapon)
-    {
-        _weapons.Add(weapon);
+        _totalMoney = newAmount;
+        TotalMoneyChanged?.Invoke(_totalMoney);
     }
 }
