@@ -51,9 +51,10 @@ public class Weapon : MonoBehaviour
         _playerShooter.PlayerShot -= OnPlayerShot;
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider collider)
     {
-        HitCollider?.Invoke(collision.collider);
+        if (collider.TryGetComponent(out Money money))
+            HitCollider?.Invoke(collider);
     }
 
     public void Translate(Vector3 position)

@@ -22,10 +22,8 @@ public class Money : ResetableMonoBehaviour
         transform.Rotate(_rotationAnglePerSecond * Time.deltaTime * Vector3.up);
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider collider)
     {
-        Collider collider = collision.collider;
-
         if (collider.TryGetComponent(out Weapon _) || collider.TryGetComponent(out Bullet _))
             ChangeAppearance(false);
     }
