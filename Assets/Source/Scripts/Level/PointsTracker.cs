@@ -77,7 +77,6 @@ public class PointsTracker : ResetableMonoBehaviour
 
         if (pointsGot > 0)
         {
-            Debug.Log("Points");
             _points += pointsGot;
             GotPoints?.Invoke(pointsGot, enemyPart.transform);
         }

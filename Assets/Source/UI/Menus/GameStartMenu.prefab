@@ -16,7 +16,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!224 &1153484371504327540
 RectTransform:
@@ -47,7 +47,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 352216492052326695}
   m_Enabled: 1
-  m_Alpha: 0
+  m_Alpha: 1
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -80,7 +80,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!224 &6965299647138944246
 RectTransform:
@@ -148,6 +148,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6965299647138944246}
     m_Modifications:
+    - target: {fileID: 715088913711627138, guid: dff5d7a5b76a1814093679603d723f2b, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 1611627937081850691, guid: dff5d7a5b76a1814093679603d723f2b, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1611627937081850691, guid: dff5d7a5b76a1814093679603d723f2b, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5711050500808064723, guid: dff5d7a5b76a1814093679603d723f2b, type: 3}
+      propertyPath: m_text
+      value: "\u041F\u043E\u0433\u043D\u0430\u043B\u0438!"
+      objectReference: {fileID: 0}
     - target: {fileID: 5711050500808064723, guid: dff5d7a5b76a1814093679603d723f2b, type: 3}
       propertyPath: m_fontAsset
       value: 
@@ -159,6 +175,10 @@ PrefabInstance:
     - target: {fileID: 5910741477193916935, guid: dff5d7a5b76a1814093679603d723f2b, type: 3}
       propertyPath: m_Name
       value: PlayButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 5910741477193916935, guid: dff5d7a5b76a1814093679603d723f2b, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 5963319978358357801, guid: dff5d7a5b76a1814093679603d723f2b, type: 3}
       propertyPath: m_Pivot.x
@@ -190,11 +210,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5963319978358357801, guid: dff5d7a5b76a1814093679603d723f2b, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 100
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 5963319978358357801, guid: dff5d7a5b76a1814093679603d723f2b, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 100
+      value: 80
       objectReference: {fileID: 0}
     - target: {fileID: 5963319978358357801, guid: dff5d7a5b76a1814093679603d723f2b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -269,3 +289,22 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5963319978358357801, guid: dff5d7a5b76a1814093679603d723f2b, type: 3}
   m_PrefabInstance: {fileID: 6794390066850613751}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &6315740271435526773 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 715088913711627138, guid: dff5d7a5b76a1814093679603d723f2b, type: 3}
+  m_PrefabInstance: {fileID: 6794390066850613751}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4677259891078619293
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6315740271435526773}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbf51be86e70d7941bd40914206e4ddc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  translationName: Go
+  FallbackText: Go!

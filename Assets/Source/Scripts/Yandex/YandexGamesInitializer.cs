@@ -8,6 +8,7 @@ public class YandexGamesInitializer : MonoBehaviour
 {
     [SerializeField] private string[] leaderboards;
     [SerializeField] private PlayerDataLoader _playerDataLoader;
+    [SerializeField] private Localizator _localizator;
 
     private void Awake()
     {
@@ -20,7 +21,8 @@ public class YandexGamesInitializer : MonoBehaviour
 
         yield return YandexGamesSdk.Initialize();
 
-        LeanLocalization.SetCurrentLanguageAll(YandexGamesSdk.Environment.i18n.lang);
+        string languageCode = YandexGamesSdk.Environment.i18n.lang;
+        _localizator.Localize(languageCode);
 
         if (PlayerAccount.IsAuthorized == false)
             PlayerAccount.Authorize();
@@ -28,13 +30,8 @@ public class YandexGamesInitializer : MonoBehaviour
         if (PlayerAccount.HasPersonalProfileDataPermission == false)
             PlayerAccount.RequestPersonalProfileDataPermission();
 
-        PlayerAccount.GetPlayerData(_progressLoader.LoadData);
-
-        //Leaderboard.GetPlayerEntry(LeaderboardConstants.Name, TryCreatePlayerLeaderboardEntity);
-        //Leaderboard.GetEntries(LeaderboardConstants.Name, _leaderboard.Init);
-
+        PlayerAccount.GetPlayerData(_playerDataLoader.LoadData);
 #endif
-
         yield return null;
     }
 }
