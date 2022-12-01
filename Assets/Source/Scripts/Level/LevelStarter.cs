@@ -1,10 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class LevelStarter : MonoBehaviour
 {
-    [SerializeField] private LevelLayoutGenerator _levelLayoutGenerator;
+    [SerializeField] private LevelLayout _levelLayout;
     [SerializeField] private Menu _gameStartMenu;
 
     private static LevelStarter instance;
@@ -26,8 +25,8 @@ public class LevelStarter : MonoBehaviour
 
     private void Start()
     {
-        ResetAll();
-        _gameStartMenu.Open();
+        LoadMainMenu();
+        Camera.main.SetWidth(_levelLayout.Width);
     }
 
     public static void AddResetableObject(ResetableMonoBehaviour resetableObject)
@@ -36,20 +35,15 @@ public class LevelStarter : MonoBehaviour
             instance.Add(resetableObject);
     }
 
-    public static void RestartLevel()
+    public void LoadMainMenu()
     {
-        ResetAll();
+        ResetLevel();
+        _gameStartMenu.Open();
     }
 
-    public static void StartNewLevel()
+    public void ResetLevel()
     {
-        instance._levelLayoutGenerator.GenerateNewInnerLayout();
-        ResetAll();
-    }
-
-    private static void ResetAll()
-    {
-        foreach (ResetableMonoBehaviour resetableObject in instance._resetableObjects)
+        foreach (ResetableMonoBehaviour resetableObject in _resetableObjects)
             resetableObject.SetStartState();
     }
 

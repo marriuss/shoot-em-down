@@ -4,10 +4,15 @@ using UnityEngine;
 
 public static class CameraExtensions
 {
-    public static Bounds GetOrthographicBounds(this Camera camera)
+    private const float MinAspectRatio = 2f;
+
+    public static void SetWidth(this Camera camera, float width)
     {
-        float screenAspect = (float)Screen.width / Screen.height;
-        float cameraHeight = camera.orthographicSize * 2;
-        return new Bounds(camera.transform.position, new Vector3(cameraHeight * screenAspect, cameraHeight, 0));
+        float aspectRatio = (float)Screen.height / Screen.width;
+
+        if (aspectRatio < MinAspectRatio)
+            width *= MinAspectRatio / aspectRatio;
+
+        camera.orthographicSize = width * aspectRatio * 0.5f;
     }
 }
