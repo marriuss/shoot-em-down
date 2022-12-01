@@ -1,10 +1,12 @@
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(BoxCollider))]
 public class LevelExit : MonoBehaviour
 {
     [SerializeField] private RectTransform _canvasRectTransform;
+    [SerializeField] private Image _image;
 
     public UnityAction PlayerExitLevel;
 
@@ -19,5 +21,10 @@ public class LevelExit : MonoBehaviour
         transform.localScale = new Vector3(width, height, 1);
         _canvasRectTransform.sizeDelta = new Vector2(width, height);
         _canvasRectTransform.SetParent(transform);
+    }
+
+    public void SetMaterial(Material material)
+    {
+        _image.material = material;
     }
 }

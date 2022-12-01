@@ -3,27 +3,29 @@ using UnityEngine;
 
 public class LevelLayoutGenerator : ResetableMonoBehaviour
 {
-    [SerializeField] private Transform _levelStartPoint;
+    [SerializeField] private LevelLayout _levelLayout;
+    [SerializeField] private List<LevelPalette> _levelPalettes;
+    [SerializeField] private SpriteRenderer _spaceBackground;
     [SerializeField] private LevelExit _levelExit;
     [SerializeField] private Background _background;
     [SerializeField] private Border _borderPrefab;
     [SerializeField] private Platform _platformPrefab;
     [SerializeField] private Enemy[] _enemyPrefabs;
     [SerializeField] private Money _moneyPrefab;
-    [SerializeField, Min(MinLevelHeght)] private float _levelHeight;
-    [SerializeField, Min(MinLevelWidth)] private float _levelWidth;
+    [SerializeField] private Transform _levelStartPoint;
 
-    private const float MinLevelHeght = 20;
-    private const float MinLevelWidth = 3;
+    private const float FreeHeight = 5;
     private const float PlatformWidthRatio = 0.3f;
     private const float BackgroundWidthRatio = 0.9f;
     private const float PlatformHeight = 0.2f;
     private const float LevelExitHeight = 2;
-    private const int PlatformsYOffset = 5;
+    private const int PlatformsYOffset = 4;
     private const int LevelExitYOffset = 4;
     private const float BackgroundZOffset = 0.5f;
-    private const float MoneyFrequency = 0.3f;
+    private const float MoneyFrequency = 0.2f;
 
+    private float _levelWidth;
+    private float _levelHeight;
     private float _backgroundWidth;
     private float _borderWidth;
     private float _platformWidth;
@@ -33,18 +35,23 @@ public class LevelLayoutGenerator : ResetableMonoBehaviour
     private Vector3 _backgroundPosition;
     private List<Platform> _platforms;
     private List<Money> _moneySpots;
+    private List<Border> _borders;
 
     private void Awake()
     {
+        _levelWidth = _levelLayout.Width;
+        _levelHeight = _levelLayout.Height;
         _backgroundWidth = _levelWidth * BackgroundWidthRatio;
         _borderWidth = _levelWidth * (1 - BackgroundWidthRatio);
         _levelTop = _levelStartPoint.position;
+        _levelHeight += FreeHeight;
         _levelCenter = _levelTop + Vector3.down * (_levelHeight / 2);
         _levelExitPosition = _levelTop + new Vector3(0, -_levelHeight + LevelExitYOffset, BackgroundZOffset);
         _backgroundPosition = _levelCenter + Vector3.forward * BackgroundZOffset;
         _platformWidth = _backgroundWidth * PlatformWidthRatio;
         _platforms = new List<Platform>();
         _moneySpots = new List<Money>();
+        _borders = new List<Border>();
     }
 
     private void Start()
@@ -78,15 +85,20 @@ public class LevelLayoutGenerator : ResetableMonoBehaviour
 
         Border leftBorder = Instantiate(_borderPrefab, leftStartPosition, Quaternion.identity, transform);
         leftBorder.Scale(_levelHeight, _borderWidth);
-        Instantiate(leftBorder, rightStartPosition, Quaternion.identity, transform);
+        
+        Border rightBorder = Instantiate(leftBorder, rightStartPosition, Quaternion.identity, transform);
+        
+        Border topBorder = Instantiate(_borderPrefab, _levelTop + Vector3.down * _borderWidth / 2, Quaternion.identity, transform);
+        topBorder.Scale(_borderWidth, _backgroundWidth);
+        
+        _borders.Add(leftBorder);
+        _borders.Add(rightBorder);
+        _borders.Add(topBorder);
     }
 
     private void GenerateInnerLayout()
     {
-        Platform startPlatform = Instantiate(_platformPrefab, _levelTop, Quaternion.identity, transform);
-        startPlatform.Scale(PlatformHeight, _backgroundWidth);
-
-        Vector3 currentCellPosition = _levelTop + Vector3.down;
+        Vector3 currentCellPosition = _levelTop + Vector3.down * FreeHeight;
         int currentCellNumber = 1;
 
         float moneySpawnChance;
@@ -146,24 +158,38 @@ public class LevelLayoutGenerator : ResetableMonoBehaviour
 
     private void SetInnerLayout()
     {
+        int randomIndex = Random.Range(0, _levelPalettes.Count);
+        LevelPalette currentLevelPalette = _levelPalettes[randomIndex];
+
+        foreach (Border border in _borders)
+            border.SetMaterial(currentLevelPalette.BorderMaterial);
+
+        _levelExit.SetMaterial(currentLevelPalette.LevelExitMaterial);
+        _background.SetMaterial(currentLevelPalette.BackgroundMaterial);
+        _spaceBackground.sprite = currentLevelPalette.SpaceBackground;
+
         float xPosition = _levelTop.x;
-        float yPosition;
         float zPosition = _levelTop.z;
+        float yPosition;
 
         float platformXOffset = (_backgroundWidth - _platformWidth) / 2;
-        float moneyXOffset = (_backgroundWidth - 1) / 2;
+        int maxMoneyXOffset = Mathf.FloorToInt(_backgroundWidth / 2);
 
         foreach (Platform platform in _platforms)
         {
+            platform.SetMaterial(currentLevelPalette.PlatformMaterial);
             yPosition = platform.transform.position.y;
             platform.transform.position = new Vector3(xPosition + platformXOffset * RandomSign(), yPosition, zPosition);
             platform.PlaceEnemy();
         }
 
+        float randomOffset;
+
         foreach (Money moneySpot in _moneySpots)
         {
             yPosition = moneySpot.transform.position.y;
-            moneySpot.transform.position = new Vector3(xPosition + moneyXOffset * Random.Range(-1.0f, 1.0f), yPosition, zPosition);
+            randomOffset = RandomSign() * Random.Range(-maxMoneyXOffset, 0);
+            moneySpot.transform.position = new Vector3(xPosition + randomOffset, yPosition, zPosition);
         }
     }
 

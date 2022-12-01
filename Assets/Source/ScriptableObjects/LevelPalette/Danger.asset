@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc8fc942bf4e2af46bce6e6d486dce3c, type: 3}
+  m_Name: Danger
+  m_EditorClassIdentifier: 
+  _spaceBackground: {fileID: 21300000, guid: 35313af049b4a2f42a0325330c51d74a, type: 3}
+  _backgroundMaterial: {fileID: 2100000, guid: 490033dcc7c20e6469c95e2b1815b718, type: 2}
+  _platformMaterial: {fileID: 2100000, guid: 9355c1ebbca44f2439da3fc4c7827674, type: 2}
+  _borderMaterial: {fileID: 2100000, guid: ef76fd2a0ed8785439f101603385dd0d, type: 2}
+  _levelExitMaterial: {fileID: 2100000, guid: 9731da698e5a0a8409cc91426949a906, type: 2}
