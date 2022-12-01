@@ -13,7 +13,7 @@ public class WeaponsPool : MonoBehaviour
 
     public Weapon FindByName(string name)
     {
-        return _weapons.Find(weapon => weapon.name == name);
+        return _weapons.Find(weapon => weapon.Info.Name == name);
     }
 
     public List<Weapon> GetWeaponsList()

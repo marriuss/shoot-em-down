@@ -5,14 +5,13 @@ using UnityEngine.Events;
 [RequireComponent(typeof(Rigidbody))]
 public class Bullet : MonoBehaviour
 {
-    [SerializeField] private int _damage;
+    [SerializeField] private float _speed;
 
-    private const float Speed = 50;
-    private const float DestructionDelay = 1f;
+    private const float DestructionDelay = 0.5f;
 
     private Rigidbody _rigidbody;
 
-    public UnityAction<Bullet, Collider> HitCollider;
+    public event UnityAction<Bullet, Collider> HitCollider;
 
     private void Awake()
     {
@@ -21,21 +20,18 @@ public class Bullet : MonoBehaviour
 
     public void Fly(Vector3 direction)
     {
-        _rigidbody.velocity = direction * Speed;
+        _rigidbody.velocity = direction * _speed;
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider collider)
     {
-        if (other.TryGetComponent(out Money _))
-            InvokeColliderHit(other);
+        if (collider.TryGetComponent(out Money _))
+            InvokeColliderHit(collider);
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        Collider collider = collision.collider;
-
-        if (collider.TryGetComponent(out Weapon _) == false)
-            InvokeColliderHit(collider);
+        InvokeColliderHit(collision.collider);
     }
 
     private void InvokeColliderHit(Collider collider)

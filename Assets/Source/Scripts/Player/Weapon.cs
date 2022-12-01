@@ -1,44 +1,47 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
-[RequireComponent(typeof(Animator))]
-[RequireComponent(typeof(PlayerShooter))]
 [RequireComponent(typeof(Rigidbody))]
-public class Weapon : MonoBehaviour
+public class Weapon : ResetableMonoBehaviour
 {
-    [SerializeField] private string _shootingAnimation;
+    [SerializeField] private PlayerShooter _playerShooter;
+    [SerializeField] private int _magazineCapacity;
+    [SerializeField] private float _shootingDelay;
+    [SerializeField] private float _knockbackStrength;
     [SerializeField] private Transform _bulletSpawnPoint;
     [SerializeField] private Transform _shootingPoint;
     [SerializeField] private Bullet _bulletPrefab;
-    [SerializeField] private WeaponStats _stats;
+    [SerializeField] private WeaponInfo _info;
+    [SerializeField] private UnityEvent _shot;
 
-    private const float KnockbackStrength = 25;
+    private const float GravityModifier = 0.7f;
+    private const float MaxAngularVelocity = 3f;
+    private const float SlowedDownModifier = 0.6f;
 
-    private Animator _animator;
-    private PlayerShooter _playerShooter;
+    private Vector3 _spawnPosition;
+    private Vector3 _currentSpawnPosition;
     private Rigidbody _rigidbody;
     private float _lastShotTime;
+    private float _velocityModifier;
 
     public event UnityAction<Collider> HitCollider;
     public event UnityAction<Collider> ShotCollider;
-
-    public WeaponStats WeaponStats => _stats;
 
     private Vector3 _bulletSpawnPointPosition => _bulletSpawnPoint.position;
     private Vector3 _shootingPointPosition => _shootingPoint.position;
     private Vector3 _shootingVector => _bulletSpawnPointPosition - _shootingPointPosition;
 
-    public string Name => _stats.Name;
+    public WeaponInfo Info => _info;
     public Magazine Magazine { get; private set; }
-    public int Cost => _stats.Cost;
 
     private void Awake()
     {
-        _animator = GetComponent<Animator>();
-        _playerShooter = GetComponent<PlayerShooter>();
+        _spawnPosition = transform.position;
         _rigidbody = GetComponent<Rigidbody>();
-        Magazine = new Magazine(_stats.MagazineCapacity);
+        _rigidbody.useGravity = false;
+        Magazine = new Magazine(_magazineCapacity);
+        _rigidbody.maxAngularVelocity = MaxAngularVelocity;
+        Despawn();
     }
 
     private void OnEnable()
@@ -53,21 +56,46 @@ public class Weapon : MonoBehaviour
 
     private void OnTriggerEnter(Collider collider)
     {
-        if (collider.TryGetComponent(out Money money))
+        if (collider.TryGetComponent(out Money _))
             HitCollider?.Invoke(collider);
     }
 
-    public void Translate(Vector3 position)
+    private void FixedUpdate()
     {
-        transform.position = position;
+        _rigidbody.velocity += GravityModifier * Time.deltaTime * Physics.gravity;
+        _rigidbody.velocity *= _velocityModifier;
+        _rigidbody.angularVelocity *= _velocityModifier;
     }
 
-    public void SetStartState()
+    public void SetSpawnPoint(Vector3 position)
     {
+        _currentSpawnPosition = position;
+        enabled = true;
+    }
+
+    public void Despawn()
+    {
+        _currentSpawnPosition = _spawnPosition;
+    }
+
+    public void SlowDown()
+    {
+        ModifyVelocity(SlowedDownModifier);
+    }
+
+    public void ReturnNormalSpeed()
+    {
+        ModifyVelocity(1f);
+    }
+
+    public override void SetStartState()
+    {
+        transform.position = _currentSpawnPosition;
         _rigidbody.rotation = Quaternion.identity;
         _rigidbody.velocity = Vector3.zero;
         _rigidbody.angularVelocity = Vector3.zero;
         transform.rotation = Quaternion.Euler(0, 0, -90);
+        _velocityModifier = 1f;
         Magazine.Fill();
     }
 
@@ -75,7 +103,7 @@ public class Weapon : MonoBehaviour
     {
         float currentTime = Time.time;
 
-        if (_lastShotTime + _stats.ShootingDelay < currentTime)
+        if (_lastShotTime + _shootingDelay < currentTime)
         {
             if (Magazine.IsReloading)
                 return;
@@ -92,13 +120,13 @@ public class Weapon : MonoBehaviour
     {
         if (Magazine.IsEmpty == false)
         {
-            _animator.Play(_shootingAnimation);
+            _shot?.Invoke();
             Magazine.TakeBullet(1);
-            Bullet bullet = Instantiate(_bulletPrefab, _bulletSpawnPointPosition, Quaternion.identity, gameObject.transform);
+            Bullet bullet = Instantiate(_bulletPrefab, _bulletSpawnPointPosition, transform.rotation, gameObject.transform);
             bullet.HitCollider += OnBulletHitCollider;
             bullet.Fly(_shootingVector);
-            _rigidbody.AddForceAtPosition(-_shootingVector * KnockbackStrength, _shootingPointPosition, ForceMode.VelocityChange);
-            _rigidbody.AddTorque(0, 0, koefficient, ForceMode.Acceleration);
+            _rigidbody.AddForceAtPosition(-_knockbackStrength * _velocityModifier * _shootingVector, _shootingPointPosition, ForceMode.VelocityChange);
+            _rigidbody.AddTorque(0, 0, koefficient * _velocityModifier, ForceMode.Acceleration);
         }
 
         if (Magazine.IsEmpty)
@@ -109,5 +137,10 @@ public class Weapon : MonoBehaviour
     {
         bullet.HitCollider -= OnBulletHitCollider;
         ShotCollider?.Invoke(hitCollider);
+    }
+
+    private void ModifyVelocity(float modifier)
+    {
+        _velocityModifier = modifier;
     }
 }
