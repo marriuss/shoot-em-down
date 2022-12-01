@@ -1,7 +1,6 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class LevelEnder : MonoBehaviour
 {
@@ -14,6 +13,9 @@ public class LevelEnder : MonoBehaviour
     [SerializeField] private Menu _levelEndMenu;
     [SerializeField] private Player _player;
     [SerializeField] private RaycastTarget _raycastTarget;
+    [SerializeField] private LeaderboardData _leaderboardData;
+
+    private const int Percentage = 100;
 
     private void OnEnable()
     {
@@ -28,8 +30,16 @@ public class LevelEnder : MonoBehaviour
     private void OnPlayerExitLevel()
     {
         _player.SaveLevelProgress();
-        _scoreContainer.text = _pointsTracker.TotalScore.ToString();
-        _accuracyContainer.text = string.Format("{0:0.0##}%", _pointsTracker.Accuracy * 100);
+
+        if (_pointsTracker != null)
+        {
+            int points = _pointsTracker.TotalPoints;
+            float accuracy = _pointsTracker.Accuracy * Percentage;
+            _scoreContainer.text = points.ToString();
+            _accuracyContainer.text = string.Format("{0:0.0##}%", accuracy);
+            _leaderboardData.SetScore(points);
+        }
+
         _playerWeaponFollower.StopFollowing();
         StartCoroutine(WaitForParticleEffect());
     }
