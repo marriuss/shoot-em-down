@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -6,12 +7,12 @@ using System.Linq;
 public class Player : ResetableMonoBehaviour
 {
     [SerializeField] private Weapon _startWeapon;
-    [SerializeField] private PlayerDataLoader _playerDataLoader;
     [SerializeField] private PlayerDataSaver _playerDataSaver;
 
+    private Vector3 _weaponSpawnPosition;
     private int _levelMoney;
     private int _totalMoney;
-    private HashSet<Weapon> _weapons = new HashSet<Weapon>();
+    private HashSet<Weapon> _weapons;
 
     public event UnityAction<int> TotalMoneyChanged;
     public event UnityAction<Collider> ShotCollider;
@@ -19,19 +20,23 @@ public class Player : ResetableMonoBehaviour
 
     public Weapon CurrentWeapon { get; private set; }
     public bool HasWeapon(Weapon weapon) => _weapons.Contains(weapon);
-    public bool CanBuy(Weapon weapon) => _totalMoney >= weapon.Cost;
+    public bool CanBuy(Weapon weapon) => _totalMoney >= weapon.Info.Cost;
 
     private void Awake()
     {
-        ChangeTotalMoney(_playerDataLoader.Money);
-        _weapons = _playerDataLoader.PlayerWeapons;
-        Weapon currentWeapon = _playerDataLoader.CurrentPlayerWeapon;
+        _weaponSpawnPosition = transform.position;
+        ChangeTotalMoney(0);
+        _weapons = new HashSet<Weapon>();
+        EquipWeapon(_startWeapon);
+    }
+
+    public void LoadData(int money, HashSet<Weapon> weapons, Weapon currentWeapon)
+    {
+        ChangeTotalMoney(money);
+        _weapons = weapons;
 
         if (currentWeapon == null)
-        {
             currentWeapon = _startWeapon;
-            AddWeapon(currentWeapon);
-        }
 
         EquipWeapon(currentWeapon);
     }
@@ -39,12 +44,6 @@ public class Player : ResetableMonoBehaviour
     public override void SetStartState()
     {
         _levelMoney = 0;
-        CurrentWeapon.SetStartState();
-    }
-
-    public void SpawnWeapon(Vector3 position)
-    {
-        CurrentWeapon.Translate(position);
     }
 
     public void EquipWeapon(Weapon weapon)
@@ -53,34 +52,46 @@ public class Player : ResetableMonoBehaviour
         {
             CurrentWeapon.ShotCollider -= OnShotCollider;
             CurrentWeapon.HitCollider -= OnWeaponHitCollider;
+            CurrentWeapon.Despawn();
         }
 
         if (HasWeapon(weapon) == false)
             AddWeapon(weapon);
 
         CurrentWeapon = weapon;
+        CurrentWeapon.SetSpawnPoint(_weaponSpawnPosition);
         weapon.ShotCollider += OnShotCollider;
         weapon.HitCollider += OnWeaponHitCollider;
     }
 
-    public void BuyWeapon(Weapon weapon)
+    public void PickShopWeapon(Weapon weapon)
     {
-        ChangeTotalMoney(_totalMoney - weapon.Cost);
-        AddWeapon(weapon);
+        if (HasWeapon(weapon))
+        {
+            EquipWeapon(weapon);
+        }
+        else if (CanBuy(weapon))
+        {
+            BuyWeapon(weapon);
+        }
+
+        SaveData();
     }
 
     public void SaveLevelProgress()
     {
-        ChangeTotalMoney(_totalMoney + _levelMoney);
+        AddMoney(_levelMoney);
         _levelMoney = 0;
-        HashSet<string> weaponsNames = _weapons.Select(weapon => weapon.Name).ToHashSet();
-        _playerDataSaver.SaveData(new PlayerData(CurrentWeapon.Name, weaponsNames, _totalMoney));
+        SaveData();
+        // TODO: fix money duplication bug
     }
 
-    private void AddWeapon(Weapon weapon)
+    public void AddMoney(int amount)
     {
-        if (HasWeapon(weapon) == false)
-            _weapons.Add(weapon);
+        if (amount < 0)
+            throw new ArgumentException();
+
+        ChangeTotalMoney(_totalMoney + amount);
     }
 
     private void OnShotCollider(Collider collider)
@@ -112,5 +123,26 @@ public class Player : ResetableMonoBehaviour
     {
         _totalMoney = newAmount;
         TotalMoneyChanged?.Invoke(_totalMoney);
+    }
+
+    private void AddWeapon(Weapon weapon)
+    {
+        _weapons.Add(weapon);
+    }
+
+    private void BuyWeapon(Weapon weapon)
+    {
+        ChangeTotalMoney(_totalMoney - weapon.Info.Cost);
+        AddWeapon(weapon);
+    }
+
+    private void SaveData()
+    {
+        if (_playerDataSaver != null)
+        {
+            string[] weaponNames = _weapons.Select(weapon => weapon.Info.Name).ToArray();
+            PlayerData playerData = new PlayerData(CurrentWeapon.Info.Name, weaponNames, _totalMoney);
+            _playerDataSaver.SaveData(playerData);
+        }
     }
 }

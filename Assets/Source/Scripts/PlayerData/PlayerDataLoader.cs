@@ -1,18 +1,10 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Agava.YandexGames;
-using System.Linq;
 
 public class PlayerDataLoader : MonoBehaviour
 {
     [SerializeField] private WeaponsPool _weaponsPool;
-
-    private HashSet<Weapon> _weapons = new HashSet<Weapon>();
-
-    public Weapon CurrentPlayerWeapon { get; private set; }
-    public int Money { get; private set; }
-    public HashSet<Weapon> PlayerWeapons => new HashSet<Weapon>(_weapons);
+    [SerializeField] private Player _player;
 
     public void LoadData(string jsonPlayerData)
     {
@@ -20,17 +12,21 @@ public class PlayerDataLoader : MonoBehaviour
             return;
 
         PlayerData playerData = JsonUtility.FromJson<PlayerData>(jsonPlayerData);
+        HashSet<Weapon> weapons = new HashSet<Weapon>();
         string currentWeaponName = playerData.CurrentWeaponName;
-        HashSet<string> weaponNames = playerData.Weapons;
+        string[] weaponNames = playerData.Weapons;
+        Weapon currentWeapon = null;
         Weapon weapon;
 
         foreach (string weaponName in weaponNames)
         {
             weapon = _weaponsPool.FindByName(weaponName);
-            _weapons.Add(weapon);
+            weapons.Add(weapon);
 
             if (currentWeaponName == weaponName)
-                CurrentPlayerWeapon = weapon;
+                currentWeapon = weapon;
         }
+
+        _player.LoadData(playerData.Money, weapons, currentWeapon);
     }
 }
