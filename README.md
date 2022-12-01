@@ -13,3 +13,8 @@
 * https://assetstore.unity.com/packages/audio/music/electronic/sci-fi-music-loops-pack-120186
 * https://assetstore.unity.com/packages/audio/music/electronic/synthwave-sci-fi-music-pack-184583
 * https://assetstore.unity.com/packages/audio/sound-fx/sci-fi-user-interface-sfx-182246
+* https://assetstore.unity.com/packages/audio/sound-fx/sci-fi-guns-sfx-pack-181144
+
+### Textures, materials and sprites:
+* https://assetstore.unity.com/packages/2d/textures-materials/sci-fi-texture-pack-1-23301
+* https://assetstore.unity.com/packages/2d/textures-materials/dynamic-space-background-lite-104606
