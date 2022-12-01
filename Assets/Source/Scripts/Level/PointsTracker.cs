@@ -16,14 +16,13 @@ public class PointsTracker : ResetableMonoBehaviour
     private int _points;
     private int _shotsTotal;
     private int _enemyShots;
-    private int _enemyShotsStreak;
 
     public event UnityAction<int, Transform> GotPoints;
 
     private float _accuracyMultiplier => Mathf.Clamp(Accuracy, 1f, MaxAccuracyMultiplier);
 
     public float Accuracy => _shotsTotal > 0 ? _enemyShots * 1f / _shotsTotal : 0;
-    public int TotalScore => (int)(_accuracyMultiplier * _points);
+    public int TotalPoints => (int)(_accuracyMultiplier * _points);
 
     private void OnEnable()
     {
@@ -40,14 +39,13 @@ public class PointsTracker : ResetableMonoBehaviour
         _points = 0;
         _shotsTotal = 0;
         _enemyShots = 0;
-        _enemyShotsStreak = 0;
     }
 
     private void OnPlayerShotCollider(Collider collider)
     {
         int pointsGot = 0;
 
-        if (collider.TryGetComponent(out EnemyPart enemyPart))
+        if (collider.TryGetComponent(out EnemyPart enemyPart) && enemyPart.enabled)
         {
             Enemy enemy = enemyPart.Enemy;
             Head head = enemyPart as Head;
@@ -66,11 +64,6 @@ public class PointsTracker : ResetableMonoBehaviour
                 pointsGot += KnockOutPoints;
 
             _enemyShots++;
-            _enemyShotsStreak++;
-        }
-        else
-        {
-            _enemyShotsStreak = 0;
         }
 
         _shotsTotal++;

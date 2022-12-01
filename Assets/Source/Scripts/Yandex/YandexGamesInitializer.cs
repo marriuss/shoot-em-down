@@ -1,14 +1,13 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Agava.YandexGames;
-using Lean.Localization;
 
 public class YandexGamesInitializer : MonoBehaviour
 {
-    [SerializeField] private string[] leaderboards;
     [SerializeField] private PlayerDataLoader _playerDataLoader;
     [SerializeField] private Localizator _localizator;
+    [SerializeField] private LeaderboardData _leaderboardData;
+    [SerializeField] private Settings _settings;
 
     private void Awake()
     {
@@ -17,14 +16,18 @@ public class YandexGamesInitializer : MonoBehaviour
 
     private IEnumerator Start()
     {
-#if !UNITY_WEBGL || UNITY_EDITOR
-        yield return null;
+#if UNITY_WEBGL && !UNITY_EDITOR
+        yield return YandexGamesSdk.Initialize();
+        Initialize();
 #endif
 
-        yield return YandexGamesSdk.Initialize();
+        yield return null;
+    }
 
+    private void Initialize()
+    {
         string languageCode = YandexGamesSdk.Environment.i18n.lang;
-        _localizator.Localize(languageCode);
+        _localizator.LocalizeByCode(languageCode);
 
         if (PlayerAccount.IsAuthorized == false)
             PlayerAccount.Authorize();
@@ -33,5 +36,7 @@ public class YandexGamesInitializer : MonoBehaviour
             PlayerAccount.RequestPersonalProfileDataPermission();
 
         PlayerAccount.GetPlayerData(_playerDataLoader.LoadData);
+
+        _leaderboardData.Initialize();
     }
 }
