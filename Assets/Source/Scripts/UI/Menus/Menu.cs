@@ -1,9 +1,12 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(CanvasGroup))]
 public class Menu : ResetableMonoBehaviour
 {
+    [SerializeField] private UnityEvent _opened;
+    [SerializeField] private UnityEvent _closed;
     [SerializeField, Min(0.0f)] private float _openingTime;
 
     private CanvasGroup _canvasGroup;
@@ -29,17 +32,8 @@ public class Menu : ResetableMonoBehaviour
         _canvasGroup.interactable = false;
         _canvasGroup.blocksRaycasts = false;
         _canvasGroup.alpha = 0;
-        UnfrozeTime();
-    }
-
-    private void FrozeTime()
-    {
-        Time.timeScale = 0;
-    }
-
-    private void UnfrozeTime()
-    {
         Time.timeScale = 1;
+        _closed?.Invoke();
     }
 
     private IEnumerator OpenMenu(float openingTime)
@@ -61,6 +55,7 @@ public class Menu : ResetableMonoBehaviour
         }
 
         _canvasGroup.interactable = true;
-        FrozeTime();
+        Time.timeScale = 0; 
+        _opened?.Invoke();
     }
 }

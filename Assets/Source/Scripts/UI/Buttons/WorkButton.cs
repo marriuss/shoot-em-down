@@ -21,5 +21,10 @@ public abstract class WorkButton : MonoBehaviour
         _button.onClick.RemoveListener(OnButtonClick);
     }
 
+    protected void SetInteractable(bool isInteractable)
+    {
+        _button.interactable = isInteractable;
+    }
+
     protected abstract void OnButtonClick();
 }

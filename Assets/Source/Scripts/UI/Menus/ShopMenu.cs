@@ -18,6 +18,7 @@ public class ShopMenu : Menu
         {
             WeaponView weaponView = Instantiate(_weaponViewPrefab, _content.transform);
             weaponView.Initialize(weapon, _player);
+            weaponView.enabled = true;
         }
 
         _player.TotalMoneyChanged += OnMoneyChanged;
@@ -30,6 +31,7 @@ public class ShopMenu : Menu
 
     private void OnMoneyChanged(int newMoneyValue)
     {
-        _textContainer.text = newMoneyValue.ToString();
+        if (_textContainer != null)
+            _textContainer.text = newMoneyValue.ToString();
     }
 }
