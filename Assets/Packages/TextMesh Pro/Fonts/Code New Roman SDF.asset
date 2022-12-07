@@ -5196,10 +5196,10 @@ Material:
     - _FaceDilate: 0
     - _FaceUVSpeedX: 0
     - _FaceUVSpeedY: 0
-    - _GlowInner: 0.424
+    - _GlowInner: 0
     - _GlowOffset: -1
-    - _GlowOuter: 0.158
-    - _GlowPower: 0.485
+    - _GlowOuter: 1
+    - _GlowPower: 0
     - _GradientScale: 6
     - _LightAngle: 3.1416
     - _MaskSoftnessX: 0
@@ -5225,7 +5225,7 @@ Material:
     - _StencilWriteMask: 255
     - _TextureHeight: 512
     - _TextureWidth: 512
-    - _UnderlayDilate: 0
+    - _UnderlayDilate: 0.15
     - _UnderlayOffsetX: 0
     - _UnderlayOffsetY: 0
     - _UnderlaySoftness: 0
@@ -5243,5 +5243,5 @@ Material:
     - _ReflectFaceColor: {r: 0, g: 0, b: 0, a: 1}
     - _ReflectOutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
-    - _UnderlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+    - _UnderlayColor: {r: 0.001517635, g: 0.84687346, b: 0.9911022, a: 1}
   m_BuildTextureStacks: []

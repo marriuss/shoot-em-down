@@ -165,7 +165,6 @@ public class LevelLayoutGenerator : ResetableMonoBehaviour
             border.SetMaterial(currentLevelPalette.BorderMaterial);
 
         _levelExit.SetMaterial(currentLevelPalette.LevelExitMaterial);
-        _background.SetMaterial(currentLevelPalette.BackgroundMaterial);
         _spaceBackground.sprite = currentLevelPalette.SpaceBackground;
 
         float xPosition = _levelTop.x;

@@ -1,20 +1,24 @@
 using UnityEngine;
 using Agava.YandexGames;
 
-public class PlayerDataSaver : MonoBehaviour
+public static class PlayerDataSaver
 {
-    private string _lastSavedData;
+    private static string lastSavedData;
 
-    public void SaveData(PlayerData playerData)
+    public static void SaveData(PlayerData playerData)
     {
 #if UNITY_WEBGL && !UNITY_EDITOR
+    if (PlayerAccount.IsAuthorized)
+    {
         string jsonData = JsonUtility.ToJson(playerData);
 
-        if (jsonData != _lastSavedData)
+        if (jsonData != lastSavedData)
         {
             PlayerAccount.SetPlayerData(jsonData);
-            _lastSavedData = jsonData;
+            lastSavedData = jsonData;
         }
+    }
 #endif
     }
+
 }

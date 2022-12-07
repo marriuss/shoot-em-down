@@ -11,19 +11,19 @@ public class RewardedVideo : MonoBehaviour
     public void Show()
     {
 #if UNITY_WEBGL && !UNITY_EDITOR
-    VideoAd.Show(
-        onOpenCallback: () =>
-        {
-            _audio.TurnOffMusic();
-            _raycastTarget.enabled = true;
-        },
-        onRewardedCallback: () => _player.AddMoney(_rewardAmount),
-        onCloseCallback: () =>
-        {
-            _audio.TurnOnMusic();
-            _raycastTarget.enabled = false;
-        }
-        );
+        VideoAd.Show(
+            onOpenCallback: () =>
+            {
+                _audio.TurnOffMusic();
+                _raycastTarget.enabled = true;
+            },
+            onRewardedCallback: () => _player.AddMoney(_rewardAmount),
+            onCloseCallback: () =>
+            {
+                _audio.TurnOnMusic();
+                _raycastTarget.enabled = false;
+            }
+            );
 #endif
     }
 }

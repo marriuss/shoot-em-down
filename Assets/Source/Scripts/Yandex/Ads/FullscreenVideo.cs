@@ -18,12 +18,12 @@ public class FullscreenVideo : MonoBehaviour
         if (_menuCount == _cooldown)
         {
 #if UNITY_WEBGL && !UNITY_EDITOR
-        InterstitialAd.Show(
-            onOpenCallback: () => _audio.TurnOffMusic(),
-            onCloseCallback: (bool _) => _audio.TurnOnMusic()
-        );
-#endif
+            InterstitialAd.Show(
+                onOpenCallback: () => _audio.TurnOffMusic(),
+                onCloseCallback: (bool _) => _audio.TurnOnMusic()
+            );
             _menuCount = 0;
+#endif
         }
         else
         {

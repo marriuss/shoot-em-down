@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [RequireComponent(typeof(Rigidbody))]
-public class Weapon : ResetableMonoBehaviour
+public class Weapon : MonoBehaviour
 {
     [SerializeField] private PlayerShooter _playerShooter;
     [SerializeField] private int _magazineCapacity;
@@ -76,6 +76,7 @@ public class Weapon : ResetableMonoBehaviour
     public void Despawn()
     {
         _currentSpawnPosition = _spawnPosition;
+        enabled = false;
     }
 
     public void SlowDown()
@@ -88,7 +89,7 @@ public class Weapon : ResetableMonoBehaviour
         ModifyVelocity(1f);
     }
 
-    public override void SetStartState()
+    public void SetStartState()
     {
         transform.position = _currentSpawnPosition;
         _rigidbody.rotation = Quaternion.identity;

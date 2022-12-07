@@ -8,13 +8,16 @@ public class WeaponMagazineBarView : BarView
 
     private void Update()
     {
-        if (_player.CurrentWeapon != _weapon) 
+        if (_player.CurrentWeapon != _weapon)  
             ChangeWeapon(_player.CurrentWeapon);
 
-        if (_weapon.Magazine.IsReloading)
-            Enable();
-        else
-            Disable();
+        if (_weapon != null)
+        {
+            if (_weapon.Magazine.IsReloading)
+                Enable();
+            else
+                Disable();
+        }
     }
 
     private void ChangeWeapon(Weapon newWeapon)

@@ -30,6 +30,7 @@ public class LevelEnder : MonoBehaviour
     private void OnPlayerExitLevel()
     {
         _player.SaveLevelProgress();
+        ApplicationPause.Pause();
 
         if (_pointsTracker != null)
         {

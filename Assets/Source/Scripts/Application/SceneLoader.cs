@@ -6,7 +6,7 @@ using IJunior.TypedScenes;
 public class SceneLoader : MonoBehaviour, ISceneLoadHandler<Settings>
 {
     [SerializeField] private Settings _settings;
- 
+
     public void LoadGameScene()
     {
         Game.Load(_settings);

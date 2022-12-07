@@ -14,13 +14,7 @@ public class LeaderboardData : MonoBehaviour
     private void Awake()
     {
         _bestScore = 0;
-    }
-
-    public void Initialize()
-    {
-#if UNITY_WEBGL && !UNITY_EDITOR
         LoadData();
-#endif
     }
 
     public void SetScore(int score)
@@ -31,15 +25,20 @@ public class LeaderboardData : MonoBehaviour
 
 #if UNITY_WEBGL && !UNITY_EDITOR
             Leaderboard.SetScore(_leaderboardName, score);
-            LoadData();
 #endif
+            LoadData();
         }
     }
 
     private void LoadData()
     {
+#if UNITY_WEBGL && !UNITY_EDITOR
+        if (PlayerAccount.HasPersonalProfileDataPermission == false)
+            PlayerAccount.RequestPersonalProfileDataPermission();
+
         Leaderboard.GetPlayerEntry(_leaderboardName, onSuccessCallback: LoadPlayerEntry);
         Leaderboard.GetEntries(_leaderboardName, onSuccessCallback: LoadEntries, topPlayersCount: TopPlayers, competingPlayersCount: 0, includeSelf: true);
+#endif
     }
 
     private void LoadPlayerEntry(LeaderboardEntryResponse entryResponse)
@@ -47,6 +46,7 @@ public class LeaderboardData : MonoBehaviour
         if (entryResponse == null)
             return;
 
+        _bestScore = entryResponse.score;
         _leaderboardView.SetPlayerEntry(new LeaderboardEntry(entryResponse));
     }
 

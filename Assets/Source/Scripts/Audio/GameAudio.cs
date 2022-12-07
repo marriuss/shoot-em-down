@@ -6,15 +6,16 @@ public class GameAudio : MonoBehaviour
 {
     [SerializeField] private Settings _settings;
 
-    private List<Audio> _audios;
     private List<Sound> _sounds;
     private List<Music> _music;
 
+    private bool _isMusicOn;
+
     private void Awake()
     {
-        _audios = GetComponentsInChildren<Audio>().ToList();
-        _sounds = SelectAudioTypes<Sound>(_audios);
-        _music = SelectAudioTypes<Music>(_audios);
+        _sounds = GetComponentsInChildren<Sound>().ToList();
+        _music = GetComponentsInChildren<Music>().ToList();
+        _isMusicOn = true;
     }
 
     private void OnEnable()
@@ -27,30 +28,45 @@ public class GameAudio : MonoBehaviour
         _settings.SettingsChanged -= OnSettingsChanged;
     }
 
+    private void OnApplicationFocus(bool focus)
+    {
+        if (focus)
+        {
+            if (_isMusicOn)
+                SetMusicMode(_settings.IsMusicOn);
+        }
+        else
+        {
+            SetMusicMode(false);
+        }
+    }
+
     public void TurnOnMusic()
     {
-        SetAudioType(_music, _settings.IsMusicOn);
+        _isMusicOn = true;
+        SetMusicMode(_settings.IsMusicOn);
     }
 
     public void TurnOffMusic()
     {
-        SetAudioType(_music, false);
+        _isMusicOn = false;
+        SetMusicMode(false);
     }
 
-    private void SetAudioType<T>(List<T> audios, bool isActive) where T : Audio
+    private void SetMusicMode(bool isOn)
+    {
+        SetMode(_music, isOn);
+    }
+
+    private void SetMode<T>(List<T> audios, bool isActive) where T : Audio
     {
         foreach (T audio in audios)
             audio.SetMode(isActive);
     }
-    
-    private List<T> SelectAudioTypes<T>(List<Audio> audios) where T : Audio
-    {
-        return audios.Where(audio => audio as T != null).Select(audio => (T)audio).ToList();
-    }
 
     private void OnSettingsChanged()
     {
-        SetAudioType(_sounds, _settings.AreSoundsOn);
-        SetAudioType(_music, _settings.IsMusicOn);
+        SetMode(_sounds, _settings.AreSoundsOn);
+        SetMode(_music, _settings.IsMusicOn);
     }
 }

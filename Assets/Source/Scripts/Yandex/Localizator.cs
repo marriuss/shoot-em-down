@@ -28,14 +28,6 @@ public class Localizator : MonoBehaviour
         _settings.SettingsChanged -= OnSettingChanged;
     }
 
-    public void LocalizeByCode(string languageCode)
-    {
-        LeanLanguage leanLanguage = _languages.Find(language => language.TranslationCode == languageCode);
-
-        if (leanLanguage != null)
-            _settings.ChangeLanguage(leanLanguage.name);
-    }
-
     private void OnSettingChanged()
     {
         LeanLocalization.SetCurrentLanguageAll(_settings.Language);

@@ -23,16 +23,18 @@ public class Menu : ResetableMonoBehaviour
 
     public void Open()
     {
+        ApplicationPause.OpenMenu(this);
         _canvasGroup.blocksRaycasts = true;
         StartCoroutine(OpenMenu(_openingTime));
     }
 
     public void Close()
     {
-        _canvasGroup.interactable = false;
         _canvasGroup.blocksRaycasts = false;
+        _canvasGroup.interactable = false;
         _canvasGroup.alpha = 0;
-        Time.timeScale = 1;
+        TimeChanger.UnfrozeTime();
+        ApplicationPause.CloseMenu(this);
         _closed?.Invoke();
     }
 
@@ -54,8 +56,8 @@ public class Menu : ResetableMonoBehaviour
             _canvasGroup.alpha = 1;
         }
 
+        TimeChanger.FrozeTime();
         _canvasGroup.interactable = true;
-        Time.timeScale = 0; 
         _opened?.Invoke();
     }
 }

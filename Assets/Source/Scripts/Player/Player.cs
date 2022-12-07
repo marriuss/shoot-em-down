@@ -6,13 +6,15 @@ using System.Linq;
 
 public class Player : ResetableMonoBehaviour
 {
+    [SerializeField] private WeaponsPool _weaponsPool;
     [SerializeField] private Weapon _startWeapon;
-    [SerializeField] private PlayerDataSaver _playerDataSaver;
+    [SerializeField] private bool _isCloudDataUsed;
 
     private Vector3 _weaponSpawnPosition;
     private int _levelMoney;
     private int _totalMoney;
     private HashSet<Weapon> _weapons;
+    private Weapon _nextWeapon;
 
     public event UnityAction<int> TotalMoneyChanged;
     public event UnityAction<Collider> ShotCollider;
@@ -25,43 +27,21 @@ public class Player : ResetableMonoBehaviour
     private void Awake()
     {
         _weaponSpawnPosition = transform.position;
-        ChangeTotalMoney(0);
         _weapons = new HashSet<Weapon>();
+        _nextWeapon = null;
+        ChangeTotalMoney(0);
+        AddWeapon(_startWeapon);
         EquipWeapon(_startWeapon);
-    }
-
-    public void LoadData(int money, HashSet<Weapon> weapons, Weapon currentWeapon)
-    {
-        ChangeTotalMoney(money);
-        _weapons = weapons;
-
-        if (currentWeapon == null)
-            currentWeapon = _startWeapon;
-
-        EquipWeapon(currentWeapon);
+        LoadData();
     }
 
     public override void SetStartState()
     {
+        if (_nextWeapon != null)
+            EquipWeapon(_nextWeapon);
+
+        CurrentWeapon.SetStartState();
         _levelMoney = 0;
-    }
-
-    public void EquipWeapon(Weapon weapon)
-    {
-        if (CurrentWeapon != null)
-        {
-            CurrentWeapon.ShotCollider -= OnShotCollider;
-            CurrentWeapon.HitCollider -= OnWeaponHitCollider;
-            CurrentWeapon.Despawn();
-        }
-
-        if (HasWeapon(weapon) == false)
-            AddWeapon(weapon);
-
-        CurrentWeapon = weapon;
-        CurrentWeapon.SetSpawnPoint(_weaponSpawnPosition);
-        weapon.ShotCollider += OnShotCollider;
-        weapon.HitCollider += OnWeaponHitCollider;
     }
 
     public void PickShopWeapon(Weapon weapon)
@@ -83,7 +63,6 @@ public class Player : ResetableMonoBehaviour
         AddMoney(_levelMoney);
         _levelMoney = 0;
         SaveData();
-        // TODO: fix money duplication bug
     }
 
     public void AddMoney(int amount)
@@ -136,13 +115,57 @@ public class Player : ResetableMonoBehaviour
         AddWeapon(weapon);
     }
 
+    private void EquipWeapon(Weapon weapon)
+    {
+        if (CurrentWeapon != null)
+        {
+            CurrentWeapon.ShotCollider -= OnShotCollider;
+            CurrentWeapon.HitCollider -= OnWeaponHitCollider;
+            CurrentWeapon.Despawn();
+        }
+
+        CurrentWeapon = weapon;
+        CurrentWeapon.SetSpawnPoint(_weaponSpawnPosition);
+        weapon.ShotCollider += OnShotCollider;
+        weapon.HitCollider += OnWeaponHitCollider;
+    }
+
+    private void LoadData()
+    {
+        if (_isCloudDataUsed)
+        {
+            PlayerData data = PlayerDataLoader.LoadData();
+
+            if (data == null)
+                return;
+
+            ChangeTotalMoney(data.Money);
+
+            string currentWeaponName = data.CurrentWeaponName;
+            string[] weaponNames = data.Weapons;
+
+            Weapon weapon;
+
+            foreach (string weaponName in weaponNames)
+            {
+                weapon = _weaponsPool.FindByName(weaponName);
+
+                if (weapon != null)
+                    AddWeapon(weapon);
+
+                if (currentWeaponName == weaponName)
+                    EquipWeapon(weapon);
+            }
+        }
+    }
+
     private void SaveData()
     {
-        if (_playerDataSaver != null)
+        if (_isCloudDataUsed)
         {
             string[] weaponNames = _weapons.Select(weapon => weapon.Info.Name).ToArray();
             PlayerData playerData = new PlayerData(CurrentWeapon.Info.Name, weaponNames, _totalMoney);
-            _playerDataSaver.SaveData(playerData);
+            PlayerDataSaver.SaveData(playerData);
         }
     }
 }
