@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class PointsTracker : ResetableMonoBehaviour
+public class PointsTracker : MonoBehaviour
 {
     [SerializeField] private Player _player;
 
@@ -34,7 +34,7 @@ public class PointsTracker : ResetableMonoBehaviour
         _player.ShotCollider -= OnPlayerShotCollider;
     }
 
-    public override void SetStartState()
+    public void ResetState()
     {
         _points = 0;
         _shotsTotal = 0;

@@ -3,8 +3,6 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider))]
 public class Border : LevelLayoutPart
 {
-    private const float BounceStrength = 50f; 
-
     protected override Vector3 GetBoundsSize()
     {
         return GetComponent<BoxCollider>().bounds.size;

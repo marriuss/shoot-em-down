@@ -50,7 +50,7 @@ public class LevelEnder : MonoBehaviour
         _particleSystem.Play();
         _raycastTarget.enabled = true;
 
-        yield return new WaitForSeconds(_particleSystem.main.duration);
+        yield return new WaitForSeconds(_particleSystem.main.startLifetime.constant);
 
         _particleSystem.Stop();
         _raycastTarget.enabled = false;

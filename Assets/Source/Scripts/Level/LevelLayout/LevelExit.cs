@@ -5,6 +5,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(BoxCollider))]
 public class LevelExit : MonoBehaviour
 {
+    [SerializeField] private bool _playerExitedLevel;
     [SerializeField] private RectTransform _canvasRectTransform;
     [SerializeField] private Image _image;
 
@@ -12,8 +13,16 @@ public class LevelExit : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent(out Weapon _))
+        if (other.TryGetComponent(out Weapon _) && _playerExitedLevel == false)
+        {
             PlayerExitLevel?.Invoke();
+            _playerExitedLevel = true;
+        }
+    }
+
+    public void ResetState()
+    {
+        _playerExitedLevel = false;
     }
 
     public void SetSize(float width, float height)

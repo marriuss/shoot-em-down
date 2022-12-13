@@ -7,14 +7,13 @@ using UnityEngine.Events;
 [RequireComponent(typeof(Ragdoll))]
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(CapsuleCollider))]
-public class Enemy : ResetableMonoBehaviour
+public class Enemy : MonoBehaviour
 {
     [SerializeField, Min(1)] private int _maxHealth;
     [SerializeField] private UnityEvent _playerDetected;
     [SerializeField] private UnityEvent _playerUndetected;
     [SerializeField] private float _maxKnockedOutTime;
 
-    private float _knockedOutTime;
     private Head _head;
     private Rigidbody _rigidbody;
     private Animator _animator;
@@ -58,19 +57,6 @@ public class Enemy : ResetableMonoBehaviour
             enemyPart.WasShot += OnEnemyPartWasShot;
     }
 
-    private void Update()
-    {
-        if (IsKnockedOut)
-        {
-            _knockedOutTime += Time.deltaTime;
-
-            if (_knockedOutTime >= _maxKnockedOutTime)
-            {
-
-            }
-        }
-    }
-
     private void OnDisable()
     {
         foreach (EnemyPart enemyPart in _enemyParts)
@@ -82,7 +68,7 @@ public class Enemy : ResetableMonoBehaviour
         transform.position = position;
     }
 
-    public override void SetStartState()
+    public void ResetState()
     {
         foreach (EnemyPart enemyPart in _enemyParts)
             enemyPart.enabled = true;
@@ -90,7 +76,7 @@ public class Enemy : ResetableMonoBehaviour
         SwitchPhysics(false);
         Health.Heal();
         IsKnockedOut = false;
-        _knockedOutTime = 0;
+        _ragdoll.ResetState();
     }
 
     private void TakeDamage()

@@ -1,63 +1,58 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
 [RequireComponent(typeof(CanvasGroup))]
-public class Menu : ResetableMonoBehaviour
+public class Menu : MonoBehaviour
 {
     [SerializeField] private UnityEvent _opened;
     [SerializeField] private UnityEvent _closed;
-    [SerializeField, Min(0.0f)] private float _openingTime;
 
+    private MenuGroup _menuGroup;
     private CanvasGroup _canvasGroup;
 
     private void Awake()
     {
         _canvasGroup = GetComponent<CanvasGroup>();
-    }
-
-    public override void SetStartState()
-    {
-        Close();
+        _menuGroup = GetComponentInParent<MenuGroup>();
     }
 
     public void Open()
     {
-        ApplicationPause.OpenMenu(this);
-        _canvasGroup.blocksRaycasts = true;
-        StartCoroutine(OpenMenu(_openingTime));
+        if (_menuGroup != null)
+            _menuGroup.Open(this);
+        else
+            Appear();
     }
 
     public void Close()
     {
-        _canvasGroup.blocksRaycasts = false;
-        _canvasGroup.interactable = false;
-        _canvasGroup.alpha = 0;
+        if (_menuGroup != null)
+            _menuGroup.Close(this);
+        else
+            Disappear();
+    }
+
+    public void Appear()
+    {
+        TimeChanger.FrozeTime();
+        ChangeAppearance(true);
+        ApplicationPause.OpenMenu(this);
+        _opened?.Invoke();
+    }
+
+    public void Disappear()
+    {
+        ChangeAppearance(false);
         TimeChanger.UnfrozeTime();
         ApplicationPause.CloseMenu(this);
         _closed?.Invoke();
     }
 
-    private IEnumerator OpenMenu(float openingTime)
+    private void ChangeAppearance(bool isVisible)
     {
-        if (openingTime > 0)
-        {
-            float timeElapsed = 0.0f;
-
-            while (_canvasGroup.alpha < 1)
-            {
-                timeElapsed += Time.deltaTime;
-                _canvasGroup.alpha = Mathf.Lerp(0, 1, timeElapsed / openingTime);
-                yield return null;
-            }
-        }
-        else
-        {
-            _canvasGroup.alpha = 1;
-        }
-
-        TimeChanger.FrozeTime();
-        _canvasGroup.interactable = true;
-        _opened?.Invoke();
+        float alpha = isVisible ? 1 : 0;
+        _canvasGroup.alpha = alpha;
+        _canvasGroup.blocksRaycasts = isVisible;
+        _canvasGroup.interactable = isVisible;
     }
 }

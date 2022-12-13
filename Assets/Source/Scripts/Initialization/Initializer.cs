@@ -45,14 +45,14 @@ public class Initializer : MonoBehaviour
         if (PlayerAccount.IsAuthorized)
         {
             _authorizationMenu.Close();
-            Game.Load(_settings);
+            MainMenu.Load(_settings);
         }
         else
         {
             _authorizationMenu.Open();
         }
 #else
-        Game.Load(_settings);
+        MainMenu.Load(_settings);
 #endif
 
         yield return null;

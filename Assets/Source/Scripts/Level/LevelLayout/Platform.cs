@@ -22,6 +22,7 @@ public class Platform : LevelLayoutPart
     public void PlaceEnemy()
     {
         _attachedEnemy.Translate(_objectPlacementPosition.position);
+        _attachedEnemy.ResetState();
     }
 
     protected override Vector3 GetNewLocalScale(float targetHeight, float targetWidth)

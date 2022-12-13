@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerWeaponFollower : ResetableMonoBehaviour
+public class PlayerWeaponFollower : MonoBehaviour
 {
     [SerializeField] private Player _player;
     [SerializeField] private Vector3 _rotation;
@@ -23,7 +23,7 @@ public class PlayerWeaponFollower : ResetableMonoBehaviour
         transform.position = newPosition;
     }
 
-    public override void SetStartState()
+    public void ResetState()
     {
         _targetWeapon = _player.CurrentWeapon;
     }

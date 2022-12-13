@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
-public class Ragdoll : ResetableMonoBehaviour
+public class Ragdoll : MonoBehaviour
 {
     [SerializeField] private Transform _baseBone;
     private List<EnemyPart> _enemyParts = new List<EnemyPart>();
@@ -23,7 +23,7 @@ public class Ragdoll : ResetableMonoBehaviour
         _enemyParts = enemyParts;
     }
 
-    public override void SetStartState()
+    public void ResetState()
     {
         _baseBone.localPosition = Vector3.zero;
     }

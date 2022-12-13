@@ -4,17 +4,15 @@ using UnityEngine;
 public class Audio : MonoBehaviour
 {
     private AudioSource _audioSource;
-    private float _volume;
     
     private void Awake()
     {
         _audioSource = GetComponent<AudioSource>();
-        _volume = _audioSource.volume;
     }
 
     public void SetMode(bool isActive)
     {
-        _audioSource.volume = isActive ? _volume : 0;
+        _audioSource.mute = !isActive;
     }
 
     public void Play()

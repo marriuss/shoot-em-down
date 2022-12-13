@@ -16,11 +16,6 @@ public class EnemyKnockedOutMenu : Menu
         _player.ShotCollider -= OnPlayerShotCollider;
     }
 
-    public override void SetStartState()
-    {
-        _enemyKnockedOut = false;
-    }
-
     private void OnPlayerShotCollider(Collider collider)
     {
         if (collider.TryGetComponent(out EnemyPart _) && _enemyKnockedOut == false)

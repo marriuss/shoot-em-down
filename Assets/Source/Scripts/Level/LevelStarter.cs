@@ -1,54 +1,45 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class LevelStarter : MonoBehaviour
 {
+    [SerializeField] private PlayerWeaponFollower _playerWeaponFollower;
+    [SerializeField] private LevelLayoutGenerator _generator;
+    [SerializeField] private PointsTracker _pointsTracker;
+    [SerializeField] private SlowMotion _slowMotion;
+    [SerializeField] private Player _player;
+    [SerializeField] private Playlist _levelPlaylist;
     [SerializeField] private LevelLayout _levelLayout;
-    [SerializeField] private Menu _gameStartMenu;
-
-    private static LevelStarter instance;
-
-    private List<ResetableMonoBehaviour> _resetableObjects;
-
-    private void Awake()
-    {
-        if (instance == null)
-        {
-            instance = this;
-            _resetableObjects = new List<ResetableMonoBehaviour>();
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
+    [SerializeField] private LevelExit _levelExit;
+    [SerializeField] private MenuGroup _menuGroup;
 
     private void Start()
     {
-        LoadMainMenu();
         Camera.main.SetWidth(_levelLayout.Width);
+        StartNewLevel();
+        TimeChanger.UnfrozeTime();
     }
 
-    public static void AddResetableObject(ResetableMonoBehaviour resetableObject)
+    public void StartNewLevel()
     {
-        if (instance != null)
-            instance.Add(resetableObject);
+        _generator.GenerateNewInnerLayout();
+        _levelPlaylist.ChooseNewTrack();
+        ResetObjects();
     }
 
-    public void LoadMainMenu()
+    public void RestartLevel()
     {
-        ResetLevel();
-        _gameStartMenu.Open();
+        _generator.ResetGeneration();
+        _levelPlaylist.ResetTrack();
+        ResetObjects();
     }
 
-    public void ResetLevel()
+    public void ResetObjects()
     {
-        foreach (ResetableMonoBehaviour resetableObject in _resetableObjects)
-            resetableObject.SetStartState();
-    }
-
-    private void Add(ResetableMonoBehaviour restartableObject)
-    {
-        _resetableObjects.Add(restartableObject);
+        _levelExit.ResetState();
+        _player.ResetState();
+        _pointsTracker.ResetState();
+        _slowMotion.ResetState();
+        _playerWeaponFollower.ResetState();
+        _menuGroup.CloseMenus();
     }
 }

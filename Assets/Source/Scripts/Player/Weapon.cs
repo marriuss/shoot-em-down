@@ -89,7 +89,7 @@ public class Weapon : MonoBehaviour
         ModifyVelocity(1f);
     }
 
-    public void SetStartState()
+    public void ResetState()
     {
         transform.position = _currentSpawnPosition;
         _rigidbody.rotation = Quaternion.identity;

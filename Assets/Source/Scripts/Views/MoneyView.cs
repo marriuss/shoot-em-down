@@ -3,37 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class MoneyView : ResetableMonoBehaviour
+public class MoneyView : MonoBehaviour
 {
     [SerializeField] private Player _player;
     [SerializeField] private TMP_Text _moneyContainer;
 
-    private int _moneyCollected;
-
-    public override void SetStartState()
-    {
-        _moneyCollected = 0;
-        DisplayMoneyAmount();
-    }
-
     private void OnEnable()
     {
-        _player.CollectedMoney += OnPlayerCollectedMoney;
+        _player.LevelMoneyChanged += OnPlayersLevelMoneyChanged;
     }
 
     private void OnDisable()
     {
-        _player.CollectedMoney -= OnPlayerCollectedMoney;
+        _player.LevelMoneyChanged -= OnPlayersLevelMoneyChanged;
     }
 
-    private void OnPlayerCollectedMoney(int amount)
+    private void OnPlayersLevelMoneyChanged(int newAmount)
     {
-        _moneyCollected += amount;
-        DisplayMoneyAmount();
-    }
-
-    private void DisplayMoneyAmount() 
-    {
-        _moneyContainer.text = _moneyCollected.ToString();
+        _moneyContainer.text = newAmount.ToString();
     }
 }

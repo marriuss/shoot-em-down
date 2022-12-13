@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider))]
-public class Money : ResetableMonoBehaviour
+public class Money : MonoBehaviour
 {
     [SerializeField] private int _value;
     [SerializeField] private float _rotationAnglePerSecond;
@@ -28,7 +28,7 @@ public class Money : ResetableMonoBehaviour
             ChangeAppearance(false);
     }
 
-    public override void SetStartState()
+    public void Appear()
     {
         ChangeAppearance(true);
     }

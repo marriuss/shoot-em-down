@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using System.Linq;
 
-public class Player : ResetableMonoBehaviour
+public class Player : MonoBehaviour
 {
     [SerializeField] private WeaponsPool _weaponsPool;
     [SerializeField] private Weapon _startWeapon;
@@ -14,11 +14,10 @@ public class Player : ResetableMonoBehaviour
     private int _levelMoney;
     private int _totalMoney;
     private HashSet<Weapon> _weapons;
-    private Weapon _nextWeapon;
 
     public event UnityAction<int> TotalMoneyChanged;
     public event UnityAction<Collider> ShotCollider;
-    public event UnityAction<int> CollectedMoney;
+    public event UnityAction<int> LevelMoneyChanged;
 
     public Weapon CurrentWeapon { get; private set; }
     public bool HasWeapon(Weapon weapon) => _weapons.Contains(weapon);
@@ -28,20 +27,16 @@ public class Player : ResetableMonoBehaviour
     {
         _weaponSpawnPosition = transform.position;
         _weapons = new HashSet<Weapon>();
-        _nextWeapon = null;
         ChangeTotalMoney(0);
         AddWeapon(_startWeapon);
         EquipWeapon(_startWeapon);
         LoadData();
     }
 
-    public override void SetStartState()
+    public void ResetState()
     {
-        if (_nextWeapon != null)
-            EquipWeapon(_nextWeapon);
-
-        CurrentWeapon.SetStartState();
-        _levelMoney = 0;
+        CurrentWeapon.ResetState();
+        ChangeLevelMoney(0);
     }
 
     public void PickShopWeapon(Weapon weapon)
@@ -61,7 +56,6 @@ public class Player : ResetableMonoBehaviour
     public void SaveLevelProgress()
     {
         AddMoney(_levelMoney);
-        _levelMoney = 0;
         SaveData();
     }
 
@@ -94,8 +88,13 @@ public class Player : ResetableMonoBehaviour
     private void CollectMoney(Money money)
     {
         int moneyAmount = money.Value;
-        _levelMoney += moneyAmount;
-        CollectedMoney?.Invoke(moneyAmount);
+        ChangeLevelMoney(_levelMoney + moneyAmount);
+    }
+
+    private void ChangeLevelMoney(int newAmount)
+    {
+        _levelMoney = newAmount;
+        LevelMoneyChanged?.Invoke(_levelMoney);
     }
 
     private void ChangeTotalMoney(int newAmount)

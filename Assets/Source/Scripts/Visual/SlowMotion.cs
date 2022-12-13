@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public class SlowMotion : ResetableMonoBehaviour
+public class SlowMotion : MonoBehaviour
 {
     [SerializeField] private Player _player;
     [SerializeField] private float _slowMotionCooldown;
@@ -30,7 +30,7 @@ public class SlowMotion : ResetableMonoBehaviour
         }
     }
 
-    public override void SetStartState()
+    public void ResetState()
     {
         _enemyShotsStreak = 0;
     }

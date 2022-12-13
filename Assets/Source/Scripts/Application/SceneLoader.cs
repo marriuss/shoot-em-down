@@ -17,6 +17,11 @@ public class SceneLoader : MonoBehaviour, ISceneLoadHandler<Settings>
         Tutorial.Load(_settings);
     }
 
+    public void LoadMainMenu()
+    {
+        MainMenu.Load(_settings);
+    }
+
     public void OnSceneLoaded(Settings settings)
     {
         _settings.SetSettings(settings);

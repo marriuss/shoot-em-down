@@ -1,18 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class TutorialStarter : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField] private PlayerWeaponFollower _playerWeaponFollower;
+    [SerializeField] private Player _player;
+    [SerializeField] private SlowMotion _slowMotion;
+    [SerializeField] private LevelLayout _levelLayout;
 
-    // Update is called once per frame
-    void Update()
+    private void Start()
     {
-        
+        Camera.main.SetWidth(_levelLayout.Width);
+        _player.ResetState();
+        _playerWeaponFollower.ResetState();
+        _slowMotion.ResetState();
     }
 }

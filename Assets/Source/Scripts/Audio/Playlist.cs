@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]
-public class Playlist : ResetableMonoBehaviour
+public class Playlist : MonoBehaviour
 {
     [SerializeField] private List<AudioClip> _clips;
 
@@ -14,11 +14,18 @@ public class Playlist : ResetableMonoBehaviour
         _audioSource = GetComponent<AudioSource>();
     }
 
-    public override void SetStartState()
+    public void ChooseNewTrack()
     {
         int index = Random.Range(0, _clips.Count);
         _currentAudio = _clips[index];
         _audioSource.clip = _currentAudio;
+        Play();
+    }
+
+    public void ResetTrack()
+    {
+        Stop();
+        Play();
     }
 
     public void Play()
@@ -29,5 +36,10 @@ public class Playlist : ResetableMonoBehaviour
     public void Pause()
     {
         _audioSource.Pause();
+    }
+
+    private void Stop()
+    {
+        _audioSource.Stop();
     }
 }

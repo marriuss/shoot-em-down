@@ -17,6 +17,7 @@ public class EnemyHealthBarView : BarView
     private void Start()
     {
         SetSlider(_enemy.Health.MinValue, _enemy.Health.MaxValue);
+        ChangeValue(_enemy.Health.CurrentValue);
     }
 
     private void Update()

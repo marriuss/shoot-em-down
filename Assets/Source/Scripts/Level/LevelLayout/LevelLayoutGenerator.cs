@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LevelLayoutGenerator : ResetableMonoBehaviour
+public class LevelLayoutGenerator : MonoBehaviour
 {
+    [SerializeField] private List<LevelPalette> _palettes;
+    [SerializeField] private Skybox _skybox;
     [SerializeField] private LevelLayout _levelLayout;
-    [SerializeField] private List<LevelPalette> _levelPalettes;
-    [SerializeField] private SpriteRenderer _spaceBackground;
     [SerializeField] private LevelExit _levelExit;
     [SerializeField] private Background _background;
     [SerializeField] private Border _borderPrefab;
@@ -67,10 +67,13 @@ public class LevelLayoutGenerator : ResetableMonoBehaviour
         SetInnerLayout();
     }
 
-    public override void SetStartState()
+    public void ResetGeneration()
     {
         foreach (Platform platform in _platforms)
             platform.PlaceEnemy();
+
+        foreach (Money money in _moneySpots)
+            money.Appear();
     }
 
     private void GenerateBorders()
@@ -158,14 +161,15 @@ public class LevelLayoutGenerator : ResetableMonoBehaviour
 
     private void SetInnerLayout()
     {
-        int randomIndex = Random.Range(0, _levelPalettes.Count);
-        LevelPalette currentLevelPalette = _levelPalettes[randomIndex];
+        int index = Random.Range(0, _palettes.Count);
+        LevelPalette levelPalette = _palettes[index];
 
         foreach (Border border in _borders)
-            border.SetMaterial(currentLevelPalette.BorderMaterial);
+            border.SetMaterial(levelPalette.BorderMaterial);
 
-        _levelExit.SetMaterial(currentLevelPalette.LevelExitMaterial);
-        _spaceBackground.sprite = currentLevelPalette.SpaceBackground;
+        _levelExit.SetMaterial(levelPalette.LayoutMaterial);
+        _skybox.material = levelPalette.Skybox;
+        _background.SetMaterial(levelPalette.BackgroundMaterial);
 
         float xPosition = _levelTop.x;
         float zPosition = _levelTop.z;
@@ -176,7 +180,7 @@ public class LevelLayoutGenerator : ResetableMonoBehaviour
 
         foreach (Platform platform in _platforms)
         {
-            platform.SetMaterial(currentLevelPalette.PlatformMaterial);
+            platform.SetMaterial(levelPalette.LayoutMaterial);
             yPosition = platform.transform.position.y;
             platform.transform.position = new Vector3(xPosition + platformXOffset * RandomSign(), yPosition, zPosition);
             platform.PlaceEnemy();
@@ -189,6 +193,7 @@ public class LevelLayoutGenerator : ResetableMonoBehaviour
             yPosition = moneySpot.transform.position.y;
             randomOffset = RandomSign() * Random.Range(-maxMoneyXOffset, 0);
             moneySpot.transform.position = new Vector3(xPosition + randomOffset, yPosition, zPosition);
+            moneySpot.Appear();
         }
     }
 

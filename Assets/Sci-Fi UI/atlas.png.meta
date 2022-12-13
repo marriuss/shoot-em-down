@@ -145,13 +145,13 @@ TextureImporter:
   lightmap: 0
   compressionQuality: 50
   spriteMode: 2
-  spriteExtrude: 1
+  spriteExtrude: 0
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 250
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
-  spriteGenerateFallbackPhysicsShape: 1
+  spriteGenerateFallbackPhysicsShape: 0
   alphaUsage: 1
   alphaIsTransparency: 1
   spriteTessellationDetail: -1
@@ -169,10 +169,10 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 1024
+    maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 2
+    textureCompression: 3
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -205,11 +205,11 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
     buildTarget: WebGL
-    maxTextureSize: 2048
+    maxTextureSize: 512
     resizeAlgorithm: 0
-    textureFormat: -1
+    textureFormat: 50
     textureCompression: 1
-    compressionQuality: 50
+    compressionQuality: 40
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
@@ -575,6 +575,27 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: atlas_0
+      rect:
+        serializedVersion: 2
+        x: 2000
+        y: 2136
+        width: 1000
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 16, y: 8, z: 24, w: 8}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8269695ffec2d264dbed4eb5c80998c2
+      internalID: -2143688894
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -586,38 +607,39 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      bar_green: 21300042
-      background_bar1: 21300060
-      progress_bar1: 21300008
-      window1: 21300002
-      progress_bar: 21300032
-      bar_blue: 21300040
-      arrow_right: 21300038
-      arrow_left1: 21300064
-      long_arrow_right: 21300026
-      back_arrow: 21300030
-      pause: 21300018
-      progress_bar_background: 21300010
-      bar_blue1: 21300052
-      button1: 21300014
-      bullets: 21300022
-      button_pushed: 21300016
-      progress_bar_background1: 21300028
-      rocket: 21300020
-      bar_green1: 21300058
-      plus: 21300012
-      jotstick_back: 21300004
-      button_active: 21300024
-      arrow_left: 21300036
-      background_bar: 21300050
-      bar_purple1: 21300062
-      bar_red: 21300046
-      long_arrow_left: 21300034
-      window: 21300000
-      joystikc: 21300006
-      arrow_right1: 21300066
-      bar_red1: 21300054
-      bar_purple: 21300044
+      bar_green: -2143688894
+      background_bar1: -1442131948
+      progress_bar1: 1508272317
+      window1: -1468529270
+      progress_bar: -1297915181
+      bar_blue: -1302139202
+      arrow_right: -977764349
+      arrow_left1: -405276204
+      long_arrow_right: -2105201435
+      back_arrow: -1707395745
+      pause: 156650787
+      progress_bar_background: 83029534
+      bar_blue1: -1122223089
+      button1: -1790598519
+      bullets: 502503536
+      button_pushed: 702929616
+      atlas_0: -1973832431
+      progress_bar_background1: 1208147861
+      rocket: 987039634
+      bar_green1: 499913905
+      plus: -2043818314
+      jotstick_back: -341116008
+      button_active: 372787919
+      arrow_left: 406049479
+      background_bar: 2100628206
+      bar_purple1: 1910201124
+      bar_red: -768867303
+      long_arrow_left: -1677995599
+      window: 165784616
+      joystikc: 1620276997
+      arrow_right1: 331196965
+      bar_red1: -1580270472
+      bar_purple: -442297020
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
