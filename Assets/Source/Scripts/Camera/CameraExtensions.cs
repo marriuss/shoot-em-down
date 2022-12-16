@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class CameraExtensions
 {
-    private const float MinAspectRatio = 2f;
+    private const float MinAspectRatio = 1.2f;
 
     public static void SetWidth(this Camera camera, float width)
     {

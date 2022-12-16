@@ -133,7 +133,9 @@ public class Player : MonoBehaviour
     {
         if (_isCloudDataUsed)
         {
-            PlayerData data = PlayerDataLoader.LoadData();
+            PlayerDataLoader.LoadData();
+
+            PlayerData data = PlayerDataLoader.PlayerData;
 
             if (data == null)
                 return;

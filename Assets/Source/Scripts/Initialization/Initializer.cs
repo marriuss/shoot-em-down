@@ -11,7 +11,6 @@ public class Initializer : MonoBehaviour
 {
     [SerializeField] LeanLocalization _leanLocalization;
     [SerializeField] private Settings _settings;
-    [SerializeField] private Menu _authorizationMenu;
 
     private List<LeanLanguage> _languages;
     private const bool MusicOn = true;
@@ -40,21 +39,7 @@ public class Initializer : MonoBehaviour
         _language = leanLanguage == null ? DefaultLanguage : leanLanguage.name;
         _settings.SetSettings(musicOn: MusicOn, soundsOn: SoundsOn, language: _language);
         LeanLocalization.SetCurrentLanguageAll(_language);
-
-#if UNITY_WEBGL && !UNITY_EDITOR
-        if (PlayerAccount.IsAuthorized)
-        {
-            _authorizationMenu.Close();
-            MainMenu.Load(_settings);
-        }
-        else
-        {
-            _authorizationMenu.Open();
-        }
-#else
         MainMenu.Load(_settings);
-#endif
-
         yield return null;
     }
 }
