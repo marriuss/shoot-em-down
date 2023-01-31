@@ -1,62 +1,69 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Agava.YandexGames;
+using System;
+using UnityEngine.Events;
 
-public class LeaderboardData : MonoBehaviour
+public static class LeaderboardData
 {
-    [SerializeField] private string _leaderboardName;
-    [SerializeField] private LeaderboardView _leaderboardView;
-
+    private const string LeaderboardName = "LeaderboardPoints";
     private const int TopPlayers = 15;
 
-    private int _bestScore;
+    private static int bestScore;
+    private static LeaderboardEntry playerEntry;
+    private static List<LeaderboardEntry> entries = new();
 
-    private void Awake()
+    public static event UnityAction<LeaderboardEntry> PlayerEntryLoaded;
+    public static event UnityAction<List<LeaderboardEntry>> EntriesLoaded;
+
+    static LeaderboardData()
     {
-        _bestScore = 0;
-        LoadData();
+        bestScore = 0;
     }
 
-    public void SetScore(int score)
+    public static void SetScore(int score)
     {
-        if (_bestScore < score)
+        if (playerEntry == null)
+            return;
+
+        if (bestScore < score)
         {
-            _bestScore = score;
+            bestScore = score;
 
 #if UNITY_WEBGL && !UNITY_EDITOR
-            Leaderboard.SetScore(_leaderboardName, score);
+            Leaderboard.SetScore(LeaderboardName, score);
 #endif
-            LoadData();
         }
     }
 
-    private void LoadData()
+    public static void LoadData()
     {
 #if UNITY_WEBGL && !UNITY_EDITOR
         if (PlayerAccount.HasPersonalProfileDataPermission == false)
             PlayerAccount.RequestPersonalProfileDataPermission();
 
-        Leaderboard.GetPlayerEntry(_leaderboardName, onSuccessCallback: LoadPlayerEntry);
-        Leaderboard.GetEntries(_leaderboardName, onSuccessCallback: LoadEntries, topPlayersCount: TopPlayers, competingPlayersCount: 0, includeSelf: true);
+        Leaderboard.GetPlayerEntry(LeaderboardName, onSuccessCallback: LoadPlayerEntry);
+        Leaderboard.GetEntries(LeaderboardName, onSuccessCallback: LoadEntries, topPlayersCount: TopPlayers, competingPlayersCount: 0, includeSelf: true);
 #endif
     }
 
-    private void LoadPlayerEntry(LeaderboardEntryResponse entryResponse)
+    private static void LoadPlayerEntry(LeaderboardEntryResponse entryResponse)
     {
         if (entryResponse == null)
             return;
 
-        _bestScore = entryResponse.score;
-        _leaderboardView.SetPlayerEntry(new LeaderboardEntry(entryResponse));
+        bestScore = entryResponse.score;
+        playerEntry = new LeaderboardEntry(entryResponse);
+        PlayerEntryLoaded?.Invoke(playerEntry);
     }
 
-    private void LoadEntries(LeaderboardGetEntriesResponse leaderboardEntryResponses)
+    private static void LoadEntries(LeaderboardGetEntriesResponse leaderboardEntryResponses)
     {
-        List<LeaderboardEntry> _entries = new List<LeaderboardEntry>();
+        entries.Clear();
 
         foreach (LeaderboardEntryResponse entryResponse in leaderboardEntryResponses.entries)
-            _entries.Add(new LeaderboardEntry(entryResponse));
+            entries.Add(new LeaderboardEntry(entryResponse));
 
-        _leaderboardView.SetEntries(_entries);
+        EntriesLoaded?.Invoke(entries);
     }
 }

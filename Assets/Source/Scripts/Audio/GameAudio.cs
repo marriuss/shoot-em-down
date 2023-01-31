@@ -1,20 +1,18 @@
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class GameAudio : MonoBehaviour
 {
     [SerializeField] private Settings _settings;
-
-    private List<Sound> _sounds;
-    private List<Music> _music;
+    [SerializeField] private AudioMixerController _musicController;
+    [SerializeField] private AudioMixerController _soundsController;
 
     private bool _isMusicOn;
 
     private void Awake()
     {
-        _sounds = GetComponentsInChildren<Sound>().ToList();
-        _music = GetComponentsInChildren<Music>().ToList();
         _isMusicOn = true;
     }
 
@@ -33,7 +31,7 @@ public class GameAudio : MonoBehaviour
         if (focus)
         {
             if (_isMusicOn)
-                SetMusicMode(_settings.IsMusicOn);
+                SetMusicMode(_settings.MusicOn);
         }
         else
         {
@@ -44,7 +42,7 @@ public class GameAudio : MonoBehaviour
     public void TurnOnMusic()
     {
         _isMusicOn = true;
-        SetMusicMode(_settings.IsMusicOn);
+        SetMusicMode(_settings.MusicOn);
     }
 
     public void TurnOffMusic()
@@ -55,18 +53,12 @@ public class GameAudio : MonoBehaviour
 
     private void SetMusicMode(bool isOn)
     {
-        SetMode(_music, isOn);
-    }
-
-    private void SetMode<T>(List<T> audios, bool isActive) where T : Audio
-    {
-        foreach (T audio in audios)
-            audio.SetMode(isActive);
+        _musicController.SetMode(isOn);
     }
 
     private void OnSettingsChanged()
     {
-        SetMode(_sounds, _settings.AreSoundsOn);
-        SetMode(_music, _settings.IsMusicOn);
+        _musicController.SetMode(_settings.MusicOn);
+        _soundsController.SetMode(_settings.SoundsOn);
     }
 }

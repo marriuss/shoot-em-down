@@ -531,7 +531,6 @@ GameObject:
   - component: {fileID: 1084932143}
   - component: {fileID: 1084932145}
   - component: {fileID: 1084932144}
-  - component: {fileID: 1084932147}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
@@ -597,18 +596,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1084932142}
   m_CullTransparentMesh: 1
---- !u!225 &1084932147
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1084932142}
-  m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
-  m_IgnoreParentGroups: 0
 --- !u!1 &1495009164
 GameObject:
   m_ObjectHideFlags: 0
