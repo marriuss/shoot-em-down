@@ -9,13 +9,6 @@ public class GameAudio : MonoBehaviour
     [SerializeField] private AudioMixerController _musicController;
     [SerializeField] private AudioMixerController _soundsController;
 
-    private bool _isMusicOn;
-
-    private void Awake()
-    {
-        _isMusicOn = true;
-    }
-
     private void OnEnable()
     {
         _settings.SettingsChanged += OnSettingsChanged;
@@ -28,37 +21,39 @@ public class GameAudio : MonoBehaviour
 
     private void OnApplicationFocus(bool focus)
     {
-        if (focus)
+        if (focus && _settings.MusicOn)
         {
-            if (_isMusicOn)
-                SetMusicMode(_settings.MusicOn);
+            SetMusicActive(true);
         }
         else
         {
-            SetMusicMode(false);
+            SetMusicActive(false);
         }
     }
 
-    public void TurnOnMusic()
+    public void MuteMusic()
     {
-        _isMusicOn = true;
-        SetMusicMode(_settings.MusicOn);
+        SetMusicActive(false);
     }
 
-    public void TurnOffMusic()
+    public void UnmuteMusic()
     {
-        _isMusicOn = false;
-        SetMusicMode(false);
+        SetMusicActive(_settings.MusicOn);
     }
 
-    private void SetMusicMode(bool isOn)
+    private void SetMusicActive(bool isOn)
     {
-        _musicController.SetMode(isOn);
+        _musicController.SetActive(isOn);
+    }
+
+    private void SetSoundsActive(bool isOn)
+    {
+        _soundsController.SetActive(isOn);
     }
 
     private void OnSettingsChanged()
     {
-        _musicController.SetMode(_settings.MusicOn);
-        _soundsController.SetMode(_settings.SoundsOn);
+        SetMusicActive(_settings.MusicOn);
+        SetSoundsActive(_settings.SoundsOn);
     }
 }

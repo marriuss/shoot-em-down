@@ -8,22 +8,22 @@ public class WeaponView : MonoBehaviour
     [SerializeField] ShopWeaponButton _button;
     [SerializeField] Image _image;
 
-    private Player _player;
+    private PlayerData _playerData;
     private Weapon _weapon;
 
     private void Update()
     {
-        if (_player == null || _weapon == null)
+        if (_playerData == null || _weapon == null)
             return;
 
-        _costContainer.enabled = !_player.HasWeapon(_weapon);
+        _costContainer.enabled = !_playerData.HasWeapon(_weapon);
     }
 
-    public void Initialize(Weapon weapon, Player player)
+    public void Initialize(Weapon weapon, PlayerData playerData)
     {
         _weapon = weapon;
-        _player = player;
-        _button.Initialize(weapon, player);
+        _playerData = playerData;
+        _button.Initialize(weapon, playerData);
         _costContainer.text = weapon.Info.Cost.ToString();
         _image.sprite = weapon.Info.Sprite;
     }

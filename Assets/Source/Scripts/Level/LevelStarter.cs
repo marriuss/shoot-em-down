@@ -11,7 +11,6 @@ public class LevelStarter : MonoBehaviour
     [SerializeField] private LevelLayout _levelLayout;
     [SerializeField] private LevelExit _levelExit;
     [SerializeField] private MenuGroup _menuGroup;
-    [SerializeField] private ShopMenuView _shopMenuView;
 
     private void Start()
     {
@@ -41,6 +40,5 @@ public class LevelStarter : MonoBehaviour
         _slowMotion.ResetState();
         _playerWeaponFollower.ResetState();
         _menuGroup.CloseMenus();
-        _menuGroup.Open(_shopMenuView);
     }
 }

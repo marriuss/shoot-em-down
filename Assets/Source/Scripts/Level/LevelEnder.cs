@@ -8,6 +8,7 @@ public class LevelEnder : MonoBehaviour
     [SerializeField] private ParticleSystem _particleSystem;
     [SerializeField] private PlayerWeaponFollower _playerWeaponFollower;
     [SerializeField] private Player _player;
+    [SerializeField] private PlayerSavedData _playerSavedData;
 
     public event UnityAction LevelEnded;
 
@@ -23,7 +24,9 @@ public class LevelEnder : MonoBehaviour
 
     private void OnPlayerExitLevel()
     {
-        _player.SaveLevelProgress();
+        if (_playerSavedData != null)
+            _playerSavedData.SaveData();
+
         _playerWeaponFollower.StopFollowing();
         StartCoroutine(WaitForParticleEffect());
     }

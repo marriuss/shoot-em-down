@@ -9,7 +9,8 @@ using IJunior.TypedScenes;
 
 public class Initializer : MonoBehaviour
 {
-    [SerializeField] LeanLocalization _leanLocalization;
+    [SerializeField] private LeanLocalization _leanLocalization;
+    [SerializeField] private PlayerSavedData _playerSavedData;
     [SerializeField] private Settings _settings;
 
     private List<LeanLanguage> _languages;
@@ -38,6 +39,7 @@ public class Initializer : MonoBehaviour
 
         _language = leanLanguage == null ? DefaultLanguage : leanLanguage.name;
         _settings.SetSettings(musicOn: MusicOn, soundsOn: SoundsOn, language: _language);
+        _playerSavedData.LoadData();
         LeanLocalization.SetCurrentLanguageAll(_language);
         MainMenu.Load(_settings);
         yield return null;

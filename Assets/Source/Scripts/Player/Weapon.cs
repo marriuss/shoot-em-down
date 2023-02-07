@@ -1,10 +1,10 @@
 using UnityEngine;
 using UnityEngine.Events;
 
+[RequireComponent(typeof(PlayerShooter))]
 [RequireComponent(typeof(Rigidbody))]
 public class Weapon : MonoBehaviour
 {
-    [SerializeField] private PlayerShooter _playerShooter;
     [SerializeField] private int _magazineCapacity;
     [SerializeField] private float _shootingDelay;
     [SerializeField] private float _knockbackStrength;
@@ -18,6 +18,7 @@ public class Weapon : MonoBehaviour
     private const float MaxAngularVelocity = 3f;
     private const float SlowedDownModifier = 0.6f;
 
+    private PlayerShooter _playerShooter;
     private Vector3 _spawnPosition;
     private Vector3 _currentSpawnPosition;
     private Rigidbody _rigidbody;
@@ -36,6 +37,7 @@ public class Weapon : MonoBehaviour
 
     private void Awake()
     {
+        _playerShooter = GetComponent<PlayerShooter>();
         _spawnPosition = transform.position;
         _rigidbody = GetComponent<Rigidbody>();
         _rigidbody.useGravity = false;

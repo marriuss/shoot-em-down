@@ -7,29 +7,36 @@ public class ShopWeaponButton : WorkButton
     [SerializeField] TMP_Text _equipTextContainer;
 
     private Weapon _weapon;
-    private Player _player;
-
-    private bool _playerHasWeapon => _player.HasWeapon(_weapon);
-    private bool _playerCanBuyWeapon => _player.CanBuy(_weapon);
+    private PlayerData _playerData;
 
     private void Update()
     {
-        if (_player == null || _weapon == null)
+        if (_playerData == null || _weapon == null)
             return;
 
-        SetInteractable(_playerHasWeapon ? _player.CurrentWeapon != _weapon : _playerCanBuyWeapon);
-        _equipTextContainer.enabled = _playerHasWeapon;
-        _buyTextContainer.enabled = !_playerHasWeapon;
+        bool playerHasWeapon = _playerData.HasWeapon(_weapon);
+
+        SetInteractable(playerHasWeapon ? _playerData.CurrentWeapon != _weapon : _playerData.CanBuy(_weapon));
+        _equipTextContainer.enabled = playerHasWeapon;
+        _buyTextContainer.enabled = !playerHasWeapon;
     }
 
-    public void Initialize(Weapon weapon, Player player)
+    public void Initialize(Weapon weapon, PlayerData playerData)
     {
         _weapon = weapon;
-        _player = player;
+        _playerData = playerData;
     }
 
     protected override void OnButtonClick()
     {
-        _player.PickShopWeapon(_weapon);
+        if (_playerData.HasWeapon(_weapon))
+        {
+            _playerData.SetCurrentWeapon(_weapon);
+        }
+        else if (_playerData.CanBuy(_weapon))
+        {
+            _playerData.SetMoney(_playerData.Money - _weapon.Info.Cost);
+            _playerData.AddWeapon(_weapon);
+        }
     }
 }

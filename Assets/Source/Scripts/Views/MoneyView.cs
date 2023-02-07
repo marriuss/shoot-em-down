@@ -8,18 +8,8 @@ public class MoneyView : MonoBehaviour
     [SerializeField] private Player _player;
     [SerializeField] private TMP_Text _moneyContainer;
 
-    private void OnEnable()
+    private void Update()
     {
-        _player.LevelMoneyChanged += OnPlayersLevelMoneyChanged;
-    }
-
-    private void OnDisable()
-    {
-        _player.LevelMoneyChanged -= OnPlayersLevelMoneyChanged;
-    }
-
-    private void OnPlayersLevelMoneyChanged(int newAmount)
-    {
-        _moneyContainer.text = newAmount.ToString();
+        _moneyContainer.text = _player.LevelMoney.ToString();
     }
 }

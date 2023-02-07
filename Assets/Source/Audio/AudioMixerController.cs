@@ -13,13 +13,35 @@ public class AudioMixerController : MonoBehaviour
 
     private float _volume;
 
-    private void Start()
+    private void Awake()
     {
-        _mixer.GetFloat(VolumeParameter, out _volume);
+        _volume = MaxVolume;
     }
 
-    public void SetMode(bool isOn)
+    public void SetActive(bool isOn)
     {
-        _mixer.SetFloat(VolumeParameter, isOn ? _volume : MinVolume);
+        if (isOn)
+        {
+            Unmute();
+        }
+        else
+        {
+            Mute();
+        }
+    }
+
+    private void Mute()
+    {
+        SetMixerVolume(MinVolume);
+    }
+
+    private void Unmute()
+    {
+        SetMixerVolume(_volume);
+    }
+
+    private void SetMixerVolume(float volume)
+    {
+        _mixer.SetFloat(VolumeParameter, volume);
     }
 }

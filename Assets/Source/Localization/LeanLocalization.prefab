@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 806f0696300aeac44a0e17efee222854, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentLanguage: Russian
+  currentLanguage: English
   detectLanguage: 1
   defaultLanguage: English
   saveLoad: 1
@@ -61,6 +61,7 @@ MonoBehaviour:
     - {fileID: 2948288105534937133, guid: 660ff0df7bc8b7249a1976185a475e13, type: 3}
     - {fileID: 3003507799095484494, guid: bef1e1acee2e30841839bb3e986a98bf, type: 3}
     - {fileID: 3888848029708788732, guid: ada656a252d9ed14ab5f29f3c6c8fa79, type: 3}
+    - {fileID: 2146550866196714150, guid: 5e1d0a3c884993c4bb1be0e9e1a1f580, type: 3}
     - {fileID: 1861275635580409750, guid: ba0c8ac70d5e7c74fa1ccb83f65fb569, type: 3}
     - {fileID: 9122001095288830175, guid: a628ed648da59ae4e8afc307a2463a94, type: 3}
     - {fileID: 7989394230866124026, guid: 4cfdfc80de157944586e940111d78149, type: 3}

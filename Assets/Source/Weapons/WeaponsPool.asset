@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04375b5bc2a5d0b4294f03eb1b2d0cc3, type: 3}
+  m_Name: WeaponsPool
+  m_EditorClassIdentifier: 
+  _weapons:
+  - {fileID: 4517910862029496451, guid: de58a8fc2b34aab48b1c7600befefec4, type: 3}
+  - {fileID: 8560174662750942863, guid: 321da3caa97d4284c8d10ac60695dc82, type: 3}
+  - {fileID: 8167181088857206521, guid: 506f480d297678040b749855960949e9, type: 3}
+  - {fileID: 3405445926232626716, guid: 306b0e79fc8a4bc4da8af7aa764f5416, type: 3}
