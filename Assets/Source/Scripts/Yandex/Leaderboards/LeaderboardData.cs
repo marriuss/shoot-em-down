@@ -13,8 +13,8 @@ public static class LeaderboardData
     private static LeaderboardEntry playerEntry;
     private static List<LeaderboardEntry> entries = new();
 
-    public static event UnityAction<LeaderboardEntry> PlayerEntryLoaded;
-    public static event UnityAction<List<LeaderboardEntry>> EntriesLoaded;
+    public static LeaderboardEntry PlayerEntry => playerEntry;
+    public static IReadOnlyList<LeaderboardEntry> Entries => entries;
 
     static LeaderboardData()
     {
@@ -39,9 +39,6 @@ public static class LeaderboardData
     public static void LoadData()
     {
 #if UNITY_WEBGL && !UNITY_EDITOR
-        if (PlayerAccount.HasPersonalProfileDataPermission == false)
-            PlayerAccount.RequestPersonalProfileDataPermission();
-
         Leaderboard.GetPlayerEntry(LeaderboardName, onSuccessCallback: LoadPlayerEntry);
         Leaderboard.GetEntries(LeaderboardName, onSuccessCallback: LoadEntries, topPlayersCount: TopPlayers, competingPlayersCount: 0, includeSelf: true);
 #endif
@@ -54,7 +51,6 @@ public static class LeaderboardData
 
         bestScore = entryResponse.score;
         playerEntry = new LeaderboardEntry(entryResponse);
-        PlayerEntryLoaded?.Invoke(playerEntry);
     }
 
     private static void LoadEntries(LeaderboardGetEntriesResponse leaderboardEntryResponses)
@@ -63,7 +59,5 @@ public static class LeaderboardData
 
         foreach (LeaderboardEntryResponse entryResponse in leaderboardEntryResponses.entries)
             entries.Add(new LeaderboardEntry(entryResponse));
-
-        EntriesLoaded?.Invoke(entries);
     }
 }

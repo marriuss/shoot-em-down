@@ -6,7 +6,6 @@ using UnityEngine.UI;
 public class SettingsMenuView : MenuView
 {
     [SerializeField] private Image _background;
-    [SerializeField] private Button _exitButton;
     [SerializeField] private Toggle _musicOnToggle;
     [SerializeField] private Toggle _soundsOnToggle;
 
@@ -20,6 +19,5 @@ public class SettingsMenuView : MenuView
     {
         gameObject.SetActive(active);
         _background.gameObject.SetActive(active);
-        _exitButton.gameObject.SetActive(active);
     }
 }

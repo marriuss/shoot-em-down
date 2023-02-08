@@ -127,7 +127,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 24300002, guid: 7ff82895964ffa148a1ea89d615deef9, type: 2}
   m_audioClip: {fileID: 8300000, guid: e196615aab553a14ab4e1aeb462c195c, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.08
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -280,7 +280,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _magazineCapacity: 50
   _shootingDelay: 0.5
-  _knockbackStrength: 15
+  _knockbackStrength: 35
   _bulletSpawnPoint: {fileID: 485867602879742842}
   _shootingPoint: {fileID: 1577385417524732903}
   _bulletPrefab: {fileID: 444765304391404693, guid: fbc18927fe37e434f8cdb4e69f861061, type: 3}
@@ -349,7 +349,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6216921857105042814}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.051, y: 0.26, z: 0}
+  m_LocalPosition: {x: -0.051, y: 0.15, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -380,7 +380,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8532011757178243249}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.01, y: 0.26, z: 0}
+  m_LocalPosition: {x: 0.322, y: 0.15, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

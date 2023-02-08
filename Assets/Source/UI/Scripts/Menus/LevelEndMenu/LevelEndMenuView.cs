@@ -7,6 +7,12 @@ public class LevelEndMenuView : MenuView
 {
     [SerializeField] private TMP_Text _scoreContainer;
     [SerializeField] private TMP_Text _accuracyContainer;
+    [SerializeField] private FullscreenVideo _fullscreenVideo;
+
+    private void OnEnable()
+    {
+        _fullscreenVideo.Show();
+    }
 
     public void SetScore(int points, float accuracy)
     {

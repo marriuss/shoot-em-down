@@ -25,7 +25,7 @@ public class LeaderboardView : MonoBehaviour
         }
     }
 
-    public void SetEntries(List<LeaderboardEntry> entries)
+    public void SetEntries(IReadOnlyList<LeaderboardEntry> entries)
     {
         for (int i = 0; i < entries.Count; i++)
             _leaderboardEntryViews[i].SetData(entries[i]);

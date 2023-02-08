@@ -28,14 +28,9 @@ public class Playlist : MonoBehaviour
         Play();
     }
 
-    public void Play()
+    private void Play()
     {
         _audioSource.Play();
-    }
-
-    public void Pause()
-    {
-        _audioSource.Pause();
     }
 
     private void Stop()

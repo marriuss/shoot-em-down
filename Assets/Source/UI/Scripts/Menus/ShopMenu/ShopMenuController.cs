@@ -22,6 +22,11 @@ public class ShopMenuController : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        
+    }
+
     private void Update()
     {
         _view.SetMoney(_playerData.Money);

@@ -16,7 +16,7 @@ public class ShopWeaponButton : WorkButton
 
         bool playerHasWeapon = _playerData.HasWeapon(_weapon);
 
-        SetInteractable(playerHasWeapon ? _playerData.CurrentWeapon != _weapon : _playerData.CanBuy(_weapon));
+        SetInteractable(playerHasWeapon ? _playerData.Weapon != _weapon : _playerData.CanBuy(_weapon));
         _equipTextContainer.enabled = playerHasWeapon;
         _buyTextContainer.enabled = !playerHasWeapon;
     }

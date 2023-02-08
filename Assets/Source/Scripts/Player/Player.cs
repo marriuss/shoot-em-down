@@ -18,13 +18,23 @@ public class Player : MonoBehaviour
     private void Start()
     {
         _weaponSpawnPosition = transform.position;
-        Weapon weapon = Instantiate(_playerData.CurrentWeapon);
-        EquipWeapon(weapon);
+        Weapon weapon = Instantiate(_playerData.Weapon);
+        CurrentWeapon = weapon;
+        CurrentWeapon.SetSpawnPoint(_weaponSpawnPosition);
+        weapon.ShotCollider += OnShotCollider;
+        weapon.HitCollider += OnWeaponHitCollider;
+    }
+
+    public void EndLevel()
+    {
+        _playerData.SetMoney(_playerData.Money + LevelMoney);
+        CurrentWeapon.enabled = false;
     }
 
     public void ResetState()
     {
         CurrentWeapon.ResetState();
+        CurrentWeapon.enabled = true;
         LevelMoney = 0;
     }
 
@@ -49,20 +59,5 @@ public class Player : MonoBehaviour
     private void CollectMoney(Money money)
     {
         LevelMoney += money.Value;
-    }
-
-    private void EquipWeapon(Weapon weapon)
-    {
-        if (CurrentWeapon != null)
-        {
-            CurrentWeapon.ShotCollider -= OnShotCollider;
-            CurrentWeapon.HitCollider -= OnWeaponHitCollider;
-            CurrentWeapon.Despawn();
-        }
-
-        CurrentWeapon = weapon;
-        CurrentWeapon.SetSpawnPoint(_weaponSpawnPosition);
-        weapon.ShotCollider += OnShotCollider;
-        weapon.HitCollider += OnWeaponHitCollider;
     }
 }

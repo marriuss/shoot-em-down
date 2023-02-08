@@ -1,10 +1,11 @@
 using UnityEngine;
-using Agava.YandexGames;
 
 public class AuthorizationButton : WorkButton
 {
+    [SerializeField] private Authorizer _authorizer;
+
     protected override void OnButtonClick()
     {
-        PlayerAccount.Authorize();
+        _authorizer.Authorize();
     }
 }

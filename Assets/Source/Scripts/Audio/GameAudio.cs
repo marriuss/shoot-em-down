@@ -9,6 +9,8 @@ public class GameAudio : MonoBehaviour
     [SerializeField] private AudioMixerController _musicController;
     [SerializeField] private AudioMixerController _soundsController;
 
+    private bool _musicMuted;
+
     private void OnEnable()
     {
         _settings.SettingsChanged += OnSettingsChanged;
@@ -21,7 +23,7 @@ public class GameAudio : MonoBehaviour
 
     private void OnApplicationFocus(bool focus)
     {
-        if (focus && _settings.MusicOn)
+        if (focus && _settings.MusicOn && _musicMuted == false)
         {
             SetMusicActive(true);
         }
@@ -33,11 +35,13 @@ public class GameAudio : MonoBehaviour
 
     public void MuteMusic()
     {
+        _musicMuted = true;
         SetMusicActive(false);
     }
 
     public void UnmuteMusic()
     {
+        _musicMuted = false;
         SetMusicActive(_settings.MusicOn);
     }
 

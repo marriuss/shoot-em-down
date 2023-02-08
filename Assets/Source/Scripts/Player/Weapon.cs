@@ -19,7 +19,6 @@ public class Weapon : MonoBehaviour
     private const float SlowedDownModifier = 0.6f;
 
     private PlayerShooter _playerShooter;
-    private Vector3 _spawnPosition;
     private Vector3 _currentSpawnPosition;
     private Rigidbody _rigidbody;
     private float _lastShotTime;
@@ -38,12 +37,10 @@ public class Weapon : MonoBehaviour
     private void Awake()
     {
         _playerShooter = GetComponent<PlayerShooter>();
-        _spawnPosition = transform.position;
         _rigidbody = GetComponent<Rigidbody>();
         _rigidbody.useGravity = false;
         Magazine = new Magazine(_magazineCapacity);
         _rigidbody.maxAngularVelocity = MaxAngularVelocity;
-        Despawn();
     }
 
     private void OnEnable()
@@ -72,13 +69,6 @@ public class Weapon : MonoBehaviour
     public void SetSpawnPoint(Vector3 position)
     {
         _currentSpawnPosition = position;
-        enabled = true;
-    }
-
-    public void Despawn()
-    {
-        _currentSpawnPosition = _spawnPosition;
-        enabled = false;
     }
 
     public void SlowDown()
@@ -97,7 +87,8 @@ public class Weapon : MonoBehaviour
         _rigidbody.rotation = Quaternion.identity;
         _rigidbody.velocity = Vector3.zero;
         _rigidbody.angularVelocity = Vector3.zero;
-        transform.rotation = Quaternion.Euler(0, 0, -90);
+        transform.rotation = Quaternion.identity;
+        transform.Rotate(new Vector3(0, 0, -90));
         _velocityModifier = 1f;
         Magazine.Fill();
     }

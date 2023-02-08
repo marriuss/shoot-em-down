@@ -28,23 +28,21 @@ public class LanguagesDropdown : MonoBehaviour
 
     private void OnEnable()
     {
-        _settings.SettingsChanged += OnSettingsChanged;
         _dropdown.onValueChanged.AddListener(OnValueChanged);
     }
 
     private void OnDisable()
     {
-        _settings.SettingsChanged -= OnSettingsChanged;
         _dropdown.onValueChanged.RemoveListener(OnValueChanged);
+    }
+
+    private void Update()
+    {
+        _dropdown.value = _languages.FindIndex(language => language == _settings.Language);
     }
 
     public void OnValueChanged(int index)
     {
         _settings.ChangeLanguage(_languages[index]);
-    }
-
-    private void OnSettingsChanged()
-    {
-        _dropdown.value = _languages.FindIndex(language => language == _settings.Language);
     }
 }

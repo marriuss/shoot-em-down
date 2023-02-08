@@ -9,7 +9,7 @@ public class PauseMenuController : MonoBehaviour
     
     private void OnApplicationFocus(bool focus)
     {
-        if (_menuGroup.MenusNotOpened && (focus == false))
+        if (_menuGroup.GameIsActive && (focus == false))
             _menuGroup.Open(_view);
     }
 }

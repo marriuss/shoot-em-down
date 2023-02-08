@@ -8,7 +8,7 @@ public class FullscreenVideo : MonoBehaviour
 
     private int _menuCount;
 
-    private void Awake()
+    private void Start()
     {
         _menuCount = 0;
     }
@@ -18,16 +18,27 @@ public class FullscreenVideo : MonoBehaviour
         if (_menuCount == _cooldown)
         {
 #if UNITY_WEBGL && !UNITY_EDITOR
-            InterstitialAd.Show(
-                onOpenCallback: () => _audio.TurnOffMusic(),
-                onCloseCallback: (bool _) => _audio.TurnOnMusic()
-            );
-            _menuCount = 0;
+    ShowYandexVideo();
 #endif
+            _menuCount = 0;
         }
         else
         {
             _menuCount++;
         }
+    }
+
+    public void ShowYandexVideo()
+    {
+        InterstitialAd.Show(
+            onOpenCallback: () => 
+            {
+                _audio.MuteMusic();
+            },
+            onCloseCallback: (bool _) => 
+            {
+                _audio.UnmuteMusic();
+            }
+        );
     }
 }

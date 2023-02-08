@@ -75,7 +75,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 24300002, guid: 7ff82895964ffa148a1ea89d615deef9, type: 2}
   m_audioClip: {fileID: 8300000, guid: e87fb2e782bcac14d82191fa02c2c841, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.08
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -343,7 +343,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _magazineCapacity: 30
   _shootingDelay: 0.25
-  _knockbackStrength: 20
+  _knockbackStrength: 30
   _bulletSpawnPoint: {fileID: 3529842051545939221}
   _shootingPoint: {fileID: 3582360366313119097}
   _bulletPrefab: {fileID: 5654429000123145251, guid: a49f4697f1133e34b9197c4a4c994f84, type: 3}

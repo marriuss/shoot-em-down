@@ -10,7 +10,7 @@ using IJunior.TypedScenes;
 public class Initializer : MonoBehaviour
 {
     [SerializeField] private LeanLocalization _leanLocalization;
-    [SerializeField] private PlayerSavedData _playerSavedData;
+    [SerializeField] private PlayerDataStorage _playerSavedData;
     [SerializeField] private Settings _settings;
 
     private List<LeanLanguage> _languages;

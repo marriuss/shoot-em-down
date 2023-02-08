@@ -13,7 +13,5 @@ MonoBehaviour:
   m_Name: Gun
   m_EditorClassIdentifier: 
   _name: Gun
-  _magazineCapacity: 15
-  _shootingDelay: 0.2
-  _cost: 50
+  _cost: 0
   _sprite: {fileID: 21300000, guid: 98cf794ea00f1e74fa2d200b0eb731fb, type: 3}

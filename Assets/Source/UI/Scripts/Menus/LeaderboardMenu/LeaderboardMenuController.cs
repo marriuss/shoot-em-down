@@ -6,31 +6,14 @@ public class LeaderboardMenuController : MonoBehaviour
 {
     [SerializeField] private LeaderboardMenuView _view;
 
-    private void OnEnable()
-    {
-        LeaderboardData.PlayerEntryLoaded += OnPlayerEntryLoaded;
-        LeaderboardData.EntriesLoaded += OnEntriesLoaded;
-    }
-
-    private void OnDisable()
-    {
-        LeaderboardData.PlayerEntryLoaded -= OnPlayerEntryLoaded;
-        LeaderboardData.EntriesLoaded -= OnEntriesLoaded;
-    }
-
     private void Start()
     {
         LeaderboardData.LoadData();
     }
 
-    private void OnPlayerEntryLoaded(LeaderboardEntry playerEntry)
+    private void Update()
     {
-        _view.SetPlayerEntry(playerEntry);
+        _view.SetPlayerEntry(LeaderboardData.PlayerEntry);
+        _view.SetEntries(LeaderboardData.Entries);
     }
-
-    private void OnEntriesLoaded(List<LeaderboardEntry> entries)
-    {
-        _view.SetEntries(entries);
-    }
-    
 }
